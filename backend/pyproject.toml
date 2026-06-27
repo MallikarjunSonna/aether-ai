@@ -7,7 +7,9 @@ dependencies = [
   "alembic",
   "asyncpg",
   "fastapi",
+  "passlib[bcrypt]",
   "pydantic-settings",
+  "pwdlib[argon2]",
   "sqlalchemy",
   "uvicorn[standard]"
 ]
