@@ -1,7 +1,7 @@
 """Reusable JSON Web Token service."""
 
-from datetime import UTC, datetime, timedelta
 import logging
+from datetime import UTC, datetime, timedelta
 from typing import Any, Literal, cast
 
 import jwt
@@ -9,7 +9,6 @@ from jwt import ExpiredSignatureError, InvalidTokenError
 
 from app.config.settings import AppSettings, get_settings
 from app.core.exceptions import AuthenticationException, ValidationException
-
 
 logger = logging.getLogger(__name__)
 

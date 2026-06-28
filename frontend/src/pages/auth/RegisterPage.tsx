@@ -53,10 +53,16 @@ export function RegisterPage() {
   };
 
   return (
-    <AuthCard title="Create your account" subtitle="Get started with Aether AI — it's free for teams of all sizes.">
+    <AuthCard
+      title="Create your account"
+      subtitle="Get started with Aether AI — it's free for teams of all sizes."
+    >
       <form className="space-y-4" onSubmit={handleSubmit} noValidate>
         {error && (
-          <div className="rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error" role="alert">
+          <div
+            className="rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error"
+            role="alert"
+          >
             {error}
           </div>
         )}
@@ -97,7 +103,10 @@ export function RegisterPage() {
             Password
           </label>
           <div className="relative">
-            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden="true" />
+            <Lock
+              className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
+              aria-hidden="true"
+            />
             <input
               id="register-password"
               type={showPassword ? "text" : "password"}
@@ -124,7 +133,10 @@ export function RegisterPage() {
             Confirm Password
           </label>
           <div className="relative">
-            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden="true" />
+            <Lock
+              className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
+              aria-hidden="true"
+            />
             <input
               id="register-confirm"
               type={showConfirm ? "text" : "password"}
@@ -160,7 +172,10 @@ export function RegisterPage() {
 
       <p className="text-center text-sm text-muted">
         Already have an account?{" "}
-        <Link to="/login" className="font-medium text-primary transition-colors hover:text-blue-400">
+        <Link
+          to="/login"
+          className="font-medium text-primary transition-colors hover:text-blue-400"
+        >
           Sign in
         </Link>
       </p>

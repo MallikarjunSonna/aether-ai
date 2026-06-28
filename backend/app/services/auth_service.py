@@ -11,7 +11,6 @@ from app.repositories.user_repository import UserRepository
 from app.schemas.auth import LoginRequest, RegisterRequest
 from app.services.jwt_service import JWTService
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -124,7 +123,7 @@ class AuthService:
             raise AuthenticationException(
                 "Invalid refresh token.",
                 error_code="invalid_refresh_token",
-            )
+            ) from None
 
         user = await self._user_repository.get_by_id(user_id)
         if user is None or not user.is_active:

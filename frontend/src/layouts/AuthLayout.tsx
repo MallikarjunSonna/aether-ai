@@ -32,8 +32,8 @@ export function AuthLayout({ children }: AuthLayoutProps) {
               </span>
             </h2>
             <p className="mt-5 max-w-sm text-sm leading-6 text-muted">
-              Build AI agents, manage enterprise knowledge, and orchestrate multiple LLM
-              providers from one intelligent platform.
+              Build AI agents, manage enterprise knowledge, and orchestrate multiple LLM providers
+              from one intelligent platform.
             </p>
           </div>
         </div>
@@ -49,7 +49,12 @@ export function AuthLayout({ children }: AuthLayoutProps) {
             >
               <motion.span
                 animate={{ scale: [1, 1.08, 1] }}
-                transition={{ duration: 2.4, delay: index * 0.25, repeat: Infinity, repeatDelay: 1.2 }}
+                transition={{
+                  duration: 2.4,
+                  delay: index * 0.25,
+                  repeat: Infinity,
+                  repeatDelay: 1.2,
+                }}
                 className="flex h-9 w-9 items-center justify-center rounded-md border border-primary/20 bg-primary/10 text-sm text-primary"
                 aria-hidden="true"
               >

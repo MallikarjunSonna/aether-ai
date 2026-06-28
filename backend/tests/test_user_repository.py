@@ -1,11 +1,11 @@
 """Tests for the UserRepository persistence layer."""
 
 from uuid import uuid4
+
 import pytest
 
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
-
 
 pytestmark = pytest.mark.asyncio
 
@@ -32,7 +32,9 @@ async def _create_user(repo: UserRepository, **overrides: str | None) -> User:
 
 
 class TestCreate:
-    async def test_creates_user(self, user_repository: UserRepository, user_data: dict) -> None:
+    async def test_creates_user(
+        self, user_repository: UserRepository, user_data: dict
+    ) -> None:
         user = User(**user_data)  # type: ignore[arg-type]
         created = await user_repository.create(user)
 
@@ -52,14 +54,18 @@ class TestCreate:
 
         assert created.is_active is True
 
-    async def test_default_is_not_superuser(self, user_repository: UserRepository) -> None:
+    async def test_default_is_not_superuser(
+        self, user_repository: UserRepository
+    ) -> None:
         created = await _create_user(user_repository)
 
         assert created.is_superuser is False
 
 
 class TestGetByEmail:
-    async def test_returns_user_when_found(self, user_repository: UserRepository) -> None:
+    async def test_returns_user_when_found(
+        self, user_repository: UserRepository
+    ) -> None:
         await _create_user(user_repository, email="findme@example.com")
 
         found = await user_repository.get_by_email("findme@example.com")
@@ -67,7 +73,9 @@ class TestGetByEmail:
         assert found is not None
         assert found.email == "findme@example.com"
 
-    async def test_returns_none_when_not_found(self, user_repository: UserRepository) -> None:
+    async def test_returns_none_when_not_found(
+        self, user_repository: UserRepository
+    ) -> None:
         found = await user_repository.get_by_email("nobody@example.com")
 
         assert found is None
@@ -88,7 +96,9 @@ class TestGetByEmail:
 
 
 class TestGetByUsername:
-    async def test_returns_user_when_found(self, user_repository: UserRepository) -> None:
+    async def test_returns_user_when_found(
+        self, user_repository: UserRepository
+    ) -> None:
         await _create_user(user_repository, username="findme")
 
         found = await user_repository.get_by_username("findme")
@@ -96,7 +106,9 @@ class TestGetByUsername:
         assert found is not None
         assert found.username == "findme"
 
-    async def test_returns_none_when_not_found(self, user_repository: UserRepository) -> None:
+    async def test_returns_none_when_not_found(
+        self, user_repository: UserRepository
+    ) -> None:
         found = await user_repository.get_by_username("nobody")
 
         assert found is None
@@ -110,7 +122,9 @@ class TestGetByUsername:
 
 
 class TestGetById:
-    async def test_returns_user_when_found(self, user_repository: UserRepository) -> None:
+    async def test_returns_user_when_found(
+        self, user_repository: UserRepository
+    ) -> None:
         created = await _create_user(user_repository)
 
         found = await user_repository.get_by_id(created.id)
@@ -118,48 +132,62 @@ class TestGetById:
         assert found is not None
         assert found.id == created.id
 
-    async def test_returns_none_for_unknown_id(self, user_repository: UserRepository) -> None:
+    async def test_returns_none_for_unknown_id(
+        self, user_repository: UserRepository
+    ) -> None:
         found = await user_repository.get_by_id(uuid4())
 
         assert found is None
 
 
 class TestExistsEmail:
-    async def test_returns_true_when_exists(self, user_repository: UserRepository) -> None:
+    async def test_returns_true_when_exists(
+        self, user_repository: UserRepository
+    ) -> None:
         await _create_user(user_repository, email="exists@test.com")
 
         result = await user_repository.exists_email("exists@test.com")
 
         assert result is True
 
-    async def test_returns_false_when_not_exists(self, user_repository: UserRepository) -> None:
+    async def test_returns_false_when_not_exists(
+        self, user_repository: UserRepository
+    ) -> None:
         result = await user_repository.exists_email("nobody@test.com")
 
         assert result is False
 
 
 class TestExistsUsername:
-    async def test_returns_true_when_exists(self, user_repository: UserRepository) -> None:
+    async def test_returns_true_when_exists(
+        self, user_repository: UserRepository
+    ) -> None:
         await _create_user(user_repository, username="existsuser")
 
         result = await user_repository.exists_username("existsuser")
 
         assert result is True
 
-    async def test_returns_false_when_not_exists(self, user_repository: UserRepository) -> None:
+    async def test_returns_false_when_not_exists(
+        self, user_repository: UserRepository
+    ) -> None:
         result = await user_repository.exists_username("nobodyuser")
 
         assert result is False
 
 
 class TestUniqueConstraint:
-    async def test_duplicate_email_raises(self, user_repository: UserRepository) -> None:
+    async def test_duplicate_email_raises(
+        self, user_repository: UserRepository
+    ) -> None:
         await _create_user(user_repository, email="unique@test.com")
 
         with pytest.raises(Exception):
             await _create_user(user_repository, email="unique@test.com")
 
-    async def test_duplicate_username_raises(self, user_repository: UserRepository) -> None:
+    async def test_duplicate_username_raises(
+        self, user_repository: UserRepository
+    ) -> None:
         await _create_user(user_repository, username="uniqueuser")
 
         with pytest.raises(Exception):

@@ -5,7 +5,6 @@ from uuid import UUID
 
 from sqlalchemy import DateTime, Uuid
 
-
 UUIDType: TypeAlias = Uuid
 """Database-agnostic UUID column type that returns :class:`uuid.UUID` values."""
 

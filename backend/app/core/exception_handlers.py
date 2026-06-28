@@ -14,7 +14,6 @@ from app.core.exceptions import (
 )
 from app.core.responses import ErrorResponse
 
-
 logger = logging.getLogger(__name__)
 
 

@@ -55,13 +55,7 @@ export const typographyTokens = {
       "Segoe UI",
       "sans-serif",
     ],
-    mono: [
-      "JetBrains Mono",
-      "ui-monospace",
-      "SFMono-Regular",
-      "Consolas",
-      "monospace",
-    ],
+    mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "Consolas", "monospace"],
   },
   fontSize: {
     xs: "0.75rem",

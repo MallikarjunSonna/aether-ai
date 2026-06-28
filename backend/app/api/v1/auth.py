@@ -18,7 +18,6 @@ from app.schemas.auth import (
 from app.services.auth_service import AuthService
 from app.services.jwt_service import JWTService
 
-
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -33,7 +32,9 @@ def _build_auth_service(db: AsyncSession) -> AuthService:
 
 
 @router.post("/register", response_model=SuccessResponse[TokenResponse])
-async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)) -> SuccessResponse[TokenResponse]:
+async def register(
+    body: RegisterRequest, db: AsyncSession = Depends(get_db)
+) -> SuccessResponse[TokenResponse]:
     """Register a new user account and return authentication tokens."""
     service = _build_auth_service(db)
     tokens = await service.register_user(body)
@@ -47,7 +48,9 @@ async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)) ->
 
 
 @router.post("/login", response_model=SuccessResponse[TokenResponse])
-async def login(body: LoginRequest, db: AsyncSession = Depends(get_db)) -> SuccessResponse[TokenResponse]:
+async def login(
+    body: LoginRequest, db: AsyncSession = Depends(get_db)
+) -> SuccessResponse[TokenResponse]:
     """Authenticate with email and password, returning authentication tokens."""
     service = _build_auth_service(db)
     tokens = await service.login_user(body)
@@ -61,7 +64,9 @@ async def login(body: LoginRequest, db: AsyncSession = Depends(get_db)) -> Succe
 
 
 @router.post("/refresh", response_model=SuccessResponse[TokenResponse])
-async def refresh(body: RefreshTokenRequest, db: AsyncSession = Depends(get_db)) -> SuccessResponse[TokenResponse]:
+async def refresh(
+    body: RefreshTokenRequest, db: AsyncSession = Depends(get_db)
+) -> SuccessResponse[TokenResponse]:
     """Issue a new access token using a valid refresh token."""
     service = _build_auth_service(db)
     tokens = await service.refresh_access_token(body.refresh_token)

@@ -36,4 +36,3 @@ class UUIDPrimaryKeyMixin:
         default=uuid4,
         doc="UUID v4 primary key.",
     )
-

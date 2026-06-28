@@ -10,7 +10,6 @@ from app.core.exception_handlers import register_exception_handlers
 from app.core.logging import configure_logging
 from app.core.middleware import register_middleware
 
-
 logger = logging.getLogger(__name__)
 
 

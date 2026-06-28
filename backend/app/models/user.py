@@ -1,13 +1,12 @@
 """User domain model."""
 
-from datetime import datetime
 import re
+from datetime import datetime
 
 from sqlalchemy import CheckConstraint, DateTime, String
 from sqlalchemy.orm import Mapped, mapped_column, validates
 
 from app.models.base import BaseModel
-
 
 EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 """Basic email pattern for model-level validation."""

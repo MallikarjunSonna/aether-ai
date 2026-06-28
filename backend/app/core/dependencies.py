@@ -1,7 +1,7 @@
 """Shared FastAPI dependencies for authentication and request context."""
 
-from datetime import UTC, datetime
 import logging
+from datetime import UTC, datetime
 from uuid import uuid4
 
 from fastapi import Depends, Request
@@ -9,7 +9,6 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.core.exceptions import AuthenticationException
 from app.services.jwt_service import JWTService
-
 
 logger = logging.getLogger(__name__)
 

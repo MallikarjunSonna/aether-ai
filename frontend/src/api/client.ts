@@ -20,10 +20,7 @@ interface RequestOptions {
   authenticated?: boolean;
 }
 
-export async function apiRequest<T>(
-  path: string,
-  options: RequestOptions = {},
-): Promise<T> {
+export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { method = "GET", body, authenticated = false } = options;
 
   const headers: Record<string, string> = {

@@ -1,7 +1,8 @@
 """Tests for the authentication service layer."""
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 from uuid import UUID, uuid4
+
 import pytest
 
 from app.core.exceptions import AuthenticationException, ValidationException
@@ -11,7 +12,6 @@ from app.repositories.user_repository import UserRepository
 from app.schemas.auth import LoginRequest, RegisterRequest
 from app.services.auth_service import AuthService
 from app.services.jwt_service import JWTService
-
 
 _USER_ID = uuid4()
 
@@ -68,7 +68,9 @@ def inactive_user() -> User:
 
 
 class TestRegisterUser:
-    async def test_success(self, auth_service: AuthService, mock_repo: MagicMock) -> None:
+    async def test_success(
+        self, auth_service: AuthService, mock_repo: MagicMock
+    ) -> None:
         user = _make_user()
         mock_repo.exists_email.return_value = False
         mock_repo.exists_username.return_value = False
@@ -122,7 +124,9 @@ class TestRegisterUser:
         assert exc.value.error_code == "username_already_exists"
         mock_repo.create.assert_not_called()
 
-    async def test_normalizes_email(self, auth_service: AuthService, mock_repo: MagicMock) -> None:
+    async def test_normalizes_email(
+        self, auth_service: AuthService, mock_repo: MagicMock
+    ) -> None:
         user = _make_user()
         mock_repo.exists_email.return_value = False
         mock_repo.exists_username.return_value = False
@@ -137,7 +141,9 @@ class TestRegisterUser:
 
         mock_repo.exists_email.assert_called_with("test@example.com")
 
-    async def test_full_name_optional(self, auth_service: AuthService, mock_repo: MagicMock) -> None:
+    async def test_full_name_optional(
+        self, auth_service: AuthService, mock_repo: MagicMock
+    ) -> None:
         user = _make_user(full_name=None)
         mock_repo.exists_email.return_value = False
         mock_repo.exists_username.return_value = False

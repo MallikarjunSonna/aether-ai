@@ -62,4 +62,6 @@ class RefreshTokenRequest(BaseModel):
 class LogoutRequest(BaseModel):
     """Request body for logout (placeholder — no token blacklist yet)."""
 
-    refresh_token: str = Field(..., min_length=1, description="Refresh token to discard.")
+    refresh_token: str = Field(
+        ..., min_length=1, description="Refresh token to discard."
+    )

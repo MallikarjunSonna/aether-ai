@@ -41,7 +41,10 @@ export function LoginPage() {
     <AuthCard title="Welcome back" subtitle="Sign in to your Aether AI account to continue.">
       <form className="space-y-5" onSubmit={handleSubmit} noValidate>
         {error && (
-          <div className="rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error" role="alert">
+          <div
+            className="rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error"
+            role="alert"
+          >
             {error}
           </div>
         )}
@@ -62,12 +65,18 @@ export function LoginPage() {
             <label htmlFor="password" className="text-sm font-medium text-ink">
               Password
             </label>
-            <Link to="/forgot-password" className="text-xs font-medium text-primary transition-colors hover:text-blue-400">
+            <Link
+              to="/forgot-password"
+              className="text-xs font-medium text-primary transition-colors hover:text-blue-400"
+            >
               Forgot password?
             </Link>
           </div>
           <div className="relative">
-            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden="true" />
+            <Lock
+              className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
+              aria-hidden="true"
+            />
             <input
               id="password"
               type={showPassword ? "text" : "password"}
@@ -114,7 +123,10 @@ export function LoginPage() {
 
       <p className="text-center text-sm text-muted">
         Don&apos;t have an account?{" "}
-        <Link to="/register" className="font-medium text-primary transition-colors hover:text-blue-400">
+        <Link
+          to="/register"
+          className="font-medium text-primary transition-colors hover:text-blue-400"
+        >
           Create account
         </Link>
       </p>

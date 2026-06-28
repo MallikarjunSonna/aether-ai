@@ -17,6 +17,29 @@ dependencies = [
 
 [project.optional-dependencies]
 test = ["pytest", "pytest-asyncio", "pytest-cov", "httpx", "aiosqlite"]
+dev = ["ruff", "black", "isort"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+src = ["app"]
+
+[tool.ruff.lint]
+select = ["E", "F", "N", "W", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"app/api/*.py" = ["B008"]
+"app/core/dependencies.py" = ["B008"]
+"app/core/exceptions.py" = ["N818"]
+"app/models/*.py" = ["N805"]
+"tests/*.py" = ["B017"]
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"

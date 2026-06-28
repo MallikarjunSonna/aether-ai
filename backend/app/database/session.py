@@ -11,7 +11,6 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-
 DATABASE_URL_ENV_VAR: str = "DATABASE_URL"
 """Environment variable that stores the async PostgreSQL database URL."""
 
@@ -62,4 +61,3 @@ async def get_db() -> AsyncIterator[AsyncSession]:
         except Exception:
             await session.rollback()
             raise
-

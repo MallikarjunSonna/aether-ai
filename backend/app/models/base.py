@@ -1,7 +1,7 @@
 """Reusable base classes for future database entities."""
 
-from datetime import datetime
 import re
+from datetime import datetime
 
 from sqlalchemy import DateTime
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column
