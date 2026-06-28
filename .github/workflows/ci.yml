@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    name: Backend (Python 3.11)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('backend/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install backend
+        run: pip install -e ".[test,dev]"
+
+      - name: ruff check
+        run: ruff check app/ tests/
+
+      - name: black --check
+        run: black --check app/ tests/
+
+      - name: isort --check-only
+        run: isort --check-only app/ tests/
+
+      - name: pytest
+        run: pytest
+
+      - name: pytest --cov=app
+        run: pytest --cov=app --cov-report=term-missing
+
+  frontend:
+    name: Frontend (Node.js 22 LTS)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 22 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: npm run lint
+        run: npm run lint
+
+      - name: npx tsc --noEmit
+        run: npx tsc --noEmit
+
+      - name: npm run test
+        run: npm run test
+
+      - name: npm run build
+        run: npm run build
