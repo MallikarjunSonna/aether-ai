@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
   font-family:
     Inter,
     ui-sans-serif,
@@ -12,7 +12,6 @@
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
-  background: #f7f8fb;
 }
 
 * {

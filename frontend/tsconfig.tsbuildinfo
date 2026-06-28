@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/router.tsx","./src/layouts/rootlayout.tsx","./src/lib/queryclient.ts","./src/pages/dashboardpage.tsx","./src/styles/design-tokens.ts","./src/styles/theme.ts"],"version":"6.0.3"}
