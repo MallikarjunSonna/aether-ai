@@ -48,3 +48,18 @@ async def get_session() -> AsyncIterator[AsyncSession]:
     async with AsyncSessionLocal() as session:
         yield session
 
+
+async def get_db() -> AsyncIterator[AsyncSession]:
+    """FastAPI dependency that yields a request-scoped async database session.
+
+    Commits the transaction on success, rolls back on exception,
+    and always closes the session when the request completes.
+    """
+    async with AsyncSessionLocal() as session:
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
+

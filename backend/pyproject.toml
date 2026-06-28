@@ -15,5 +15,8 @@ dependencies = [
   "uvicorn[standard]"
 ]
 
+[project.optional-dependencies]
+test = ["pytest", "pytest-asyncio", "pytest-cov", "httpx", "aiosqlite"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -78,6 +78,6 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Return whether a plaintext password matches a stored password hash."""
     try:
         return password_hasher.verify(plain_password, hashed_password)
-    except ValueError:
+    except Exception:
         logger.warning("Password verification failed because the hash is invalid.")
         return False
