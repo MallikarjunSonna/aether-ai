@@ -10,6 +10,7 @@ dependencies = [
   "passlib[bcrypt]",
   "pydantic-settings",
   "pwdlib[argon2]",
+  "PyJWT",
   "sqlalchemy",
   "uvicorn[standard]"
 ]
