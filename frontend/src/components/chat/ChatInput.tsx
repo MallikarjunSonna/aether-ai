@@ -1,12 +1,13 @@
 import { useState, useRef, useCallback } from "react";
-import { SendHorizonal } from "lucide-react";
+import { SendHorizonal, Square } from "lucide-react";
 
 interface ChatInputProps {
   onSend: (content: string) => void;
+  onCancel?: () => void;
   disabled: boolean;
 }
 
-export function ChatInput({ onSend, disabled }: ChatInputProps) {
+export function ChatInput({ onSend, onCancel, disabled }: ChatInputProps) {
   const [value, setValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -42,20 +43,32 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          placeholder="Type a message..."
+          placeholder={disabled ? "Waiting for response..." : "Type a message..."}
           rows={1}
           disabled={disabled}
           aria-label="Chat input"
           className="max-h-[200px] min-h-[44px] flex-1 resize-none rounded-xl border border-line/60 bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-muted transition-colors duration-fast focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
         />
-        <button
-          onClick={handleSubmit}
-          disabled={disabled || !value.trim()}
-          aria-label="Send message"
-          className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-xl bg-primary text-white transition-colors duration-fast hover:bg-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:opacity-50 disabled:hover:bg-primary"
-        >
-          <SendHorizonal className="h-5 w-5" aria-hidden="true" />
-        </button>
+
+        {disabled && onCancel ? (
+          <button
+            onClick={onCancel}
+            aria-label="Cancel generation"
+            title="Cancel generation"
+            className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-xl border border-error/30 bg-error/10 text-error transition-colors duration-fast hover:bg-error/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error/50"
+          >
+            <Square className="h-4 w-4 fill-error" aria-hidden="true" />
+          </button>
+        ) : (
+          <button
+            onClick={handleSubmit}
+            disabled={disabled || !value.trim()}
+            aria-label="Send message"
+            className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-xl bg-primary text-white transition-colors duration-fast hover:bg-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:opacity-50 disabled:hover:bg-primary"
+          >
+            <SendHorizonal className="h-5 w-5" aria-hidden="true" />
+          </button>
+        )}
       </div>
     </div>
   );

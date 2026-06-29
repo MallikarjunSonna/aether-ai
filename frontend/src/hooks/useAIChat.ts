@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { AIChatService } from "../services/ai/AIChatService";
 import type { ProviderType } from "../types/ai";
@@ -8,6 +8,7 @@ export interface ChatEntry {
   id: string;
   role: "user" | "assistant";
   content: string;
+  isStreaming?: boolean;
 }
 
 function generateId(): string {
@@ -35,6 +36,12 @@ export function useAIChat() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const serviceRef = useRef<AIChatService | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const messagesRef = useRef<ChatEntry[]>([]);
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   const getService = useCallback((): AIChatService => {
     if (!serviceRef.current) {
@@ -43,46 +50,85 @@ export function useAIChat() {
     return serviceRef.current;
   }, []);
 
+  const cancelGeneration = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    setIsLoading(false);
+    setMessages((prev) =>
+      prev.map((msg) => (msg.isStreaming ? { ...msg, isStreaming: false } : msg)),
+    );
+  }, []);
+
   const sendMessage = useCallback(
     async (content: string, provider: ProviderType = "openai", model: string = "gpt-4.1-mini") => {
+      const currentMessages = messagesRef.current;
+
       const userEntry: ChatEntry = {
         id: generateId(),
         role: "user",
         content,
       };
 
-      setMessages((prev) => [...prev, userEntry]);
+      const assistantId = generateId();
+      const assistantEntry: ChatEntry = {
+        id: assistantId,
+        role: "assistant",
+        content: "",
+        isStreaming: true,
+      };
+
+      const abortController = new AbortController();
+      abortRef.current = abortController;
+
+      setMessages((prev) => [...prev, userEntry, assistantEntry]);
       setIsLoading(true);
       setError(null);
 
       try {
         const service = getService();
-        const chatMessages = messages
+        const chatMessages = currentMessages
           .concat(userEntry)
-          .filter((m): m is ChatEntry => m.role === "user" || m.role === "assistant")
           .map((m) => ({ role: m.role, content: m.content }));
 
-        const response = await service.sendMessage(provider, model, chatMessages);
+        const stream = service.sendMessageStream(
+          provider,
+          model,
+          chatMessages,
+          abortController.signal,
+        );
 
-        const assistantEntry: ChatEntry = {
-          id: response.id,
-          role: "assistant",
-          content: response.message.content,
-        };
-
-        setMessages((prev) => [...prev, assistantEntry]);
+        for await (const chunk of stream) {
+          if (abortController.signal.aborted) return;
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === assistantId
+                ? { ...msg, content: msg.content + chunk.message.content }
+                : msg,
+            ),
+          );
+        }
       } catch (err) {
+        if (abortController.signal.aborted) return;
+
+        setMessages((prev) => prev.filter((msg) => msg.id !== assistantId));
         setError(normalizeError(err));
       } finally {
         setIsLoading(false);
+        abortRef.current = null;
+        setMessages((prev) =>
+          prev.map((msg) => (msg.id === assistantId ? { ...msg, isStreaming: false } : msg)),
+        );
       }
     },
-    [messages, getService],
+    [getService],
   );
 
   const clearMessages = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
     setMessages([]);
     setError(null);
+    setIsLoading(false);
   }, []);
 
   return {
@@ -90,6 +136,7 @@ export function useAIChat() {
     isLoading,
     error,
     sendMessage,
+    cancelGeneration,
     clearMessages,
   };
 }

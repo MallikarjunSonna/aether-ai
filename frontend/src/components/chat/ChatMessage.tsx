@@ -3,16 +3,19 @@ import { Bot, User } from "lucide-react";
 interface ChatMessageProps {
   role: "user" | "assistant";
   content: string;
+  isStreaming?: boolean;
 }
 
-export function ChatMessage({ role, content }: ChatMessageProps) {
+export function ChatMessage({ role, content, isStreaming }: ChatMessageProps) {
   const isUser = role === "user";
+  const showCursor = isStreaming && !isUser;
 
   return (
     <div
       className={`flex gap-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}
       role="listitem"
       aria-label={`${isUser ? "User" : "Assistant"} message`}
+      aria-busy={isStreaming}
     >
       <span
         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
@@ -35,7 +38,15 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
             : "border border-line/60 bg-surface text-ink"
         }`}
       >
-        <p className="whitespace-pre-wrap">{content}</p>
+        <p className="whitespace-pre-wrap">
+          {content}
+          {showCursor && (
+            <span
+              className="ml-0.5 inline-block h-4 w-2 animate-pulse rounded-sm bg-primary align-text-bottom"
+              aria-hidden="true"
+            />
+          )}
+        </p>
       </div>
     </div>
   );

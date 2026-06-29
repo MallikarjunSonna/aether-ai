@@ -5,7 +5,8 @@ import { ChatMessages } from "../../components/chat/ChatMessages";
 import { useAIChat } from "../../hooks/useAIChat";
 
 export function AIChatPage() {
-  const { messages, isLoading, error, sendMessage, clearMessages } = useAIChat();
+  const { messages, isLoading, error, sendMessage, cancelGeneration, clearMessages } =
+    useAIChat();
 
   const hasMessages = messages.length > 0;
 
@@ -17,7 +18,7 @@ export function AIChatPage() {
         <ChatEmptyState />
       )}
 
-      <ChatInput onSend={sendMessage} disabled={isLoading} />
+      <ChatInput onSend={sendMessage} onCancel={cancelGeneration} disabled={isLoading} />
     </ChatLayout>
   );
 }

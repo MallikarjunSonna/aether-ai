@@ -25,6 +25,20 @@ export class AIChatService {
     return this.gateway.generate(provider, { model, messages });
   }
 
+  async *sendMessageStream(
+    provider: ProviderType,
+    model: string,
+    messages: ChatMessage[],
+    signal?: AbortSignal,
+  ): AsyncIterable<ChatResponse> {
+    const stream = await this.gateway.stream(provider, { model, messages });
+
+    for await (const chunk of stream) {
+      if (signal?.aborted) return;
+      yield chunk;
+    }
+  }
+
   listProviders(): ProviderType[] {
     return this.gateway.listProviders();
   }

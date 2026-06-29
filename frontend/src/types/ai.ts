@@ -47,7 +47,7 @@ export interface ChatResponse {
   provider: ProviderType;
   message: ChatMessage;
   usage: TokenUsage;
-  finishReason: FinishReason;
+  finishReason?: FinishReason;
 }
 
 export interface AIModel {

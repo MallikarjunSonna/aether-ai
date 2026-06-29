@@ -48,28 +48,28 @@ const MODELS: AIModel[] = [
     id: "gpt-4.1",
     provider: "openai",
     name: "GPT-4.1",
-    capabilities: ["chat"],
+    capabilities: ["chat", "streaming"],
     description: "OpenAI GPT-4.1 model for complex reasoning and instruction following.",
     maxTokens: 32768,
-    supportsStreaming: false,
+    supportsStreaming: true,
   },
   {
     id: "gpt-4.1-mini",
     provider: "openai",
     name: "GPT-4.1 Mini",
-    capabilities: ["chat"],
+    capabilities: ["chat", "streaming"],
     description: "Faster and more cost-effective variant of GPT-4.1.",
     maxTokens: 32768,
-    supportsStreaming: false,
+    supportsStreaming: true,
   },
   {
     id: "gpt-4o-mini",
     provider: "openai",
     name: "GPT-4o Mini",
-    capabilities: ["chat"],
+    capabilities: ["chat", "streaming"],
     description: "Fast, affordable small model for simple tasks.",
     maxTokens: 16384,
-    supportsStreaming: false,
+    supportsStreaming: true,
   },
 ];
 
@@ -131,15 +131,49 @@ export class OpenAIProvider implements AIProvider {
     }
   }
 
-  stream(
-    _request: ChatRequest,
-    _options?: GenerationOptions,
+  async *stream(
+    request: ChatRequest,
+    options?: GenerationOptions,
   ): AsyncIterable<ChatResponse> {
-    throw new AIProviderError(
-      "Streaming is not yet implemented for the OpenAI provider.",
-      "unknown",
-      "openai",
-    );
+    const resolvedOptions = { ...DEFAULT_GENERATION_OPTIONS, ...options };
+
+    try {
+      const stream = await this.client.chat.completions.create({
+        model: request.model,
+        messages: request.messages.map((m) => ({
+          role: m.role,
+          content: m.content,
+        })),
+        temperature: resolvedOptions.temperature,
+        max_tokens: resolvedOptions.maxTokens,
+        top_p: resolvedOptions.topP,
+        frequency_penalty: resolvedOptions.frequencyPenalty,
+        presence_penalty: resolvedOptions.presencePenalty,
+        stop: resolvedOptions.stop ?? undefined,
+        stream: true,
+      });
+
+      for await (const chunk of stream) {
+        const choice = chunk.choices[0];
+        if (!choice) continue;
+
+        const content = choice.delta?.content ?? "";
+
+        yield {
+          id: chunk.id,
+          model: chunk.model,
+          provider: "openai" as ProviderType,
+          message: {
+            role: "assistant" as const,
+            content,
+          },
+          usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 },
+          finishReason: choice.finish_reason ? mapFinishReason(choice.finish_reason) : undefined,
+        };
+      }
+    } catch (error) {
+      throw this.mapError(error);
+    }
   }
 
   async listModels(): Promise<AIModel[]> {
