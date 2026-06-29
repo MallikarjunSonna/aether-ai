@@ -1,7 +1,7 @@
 """Authentication service orchestration utilities."""
 
 import logging
-from typing import TypedDict
+from typing_extensions import TypedDict
 from uuid import UUID
 
 from app.core.exceptions import AuthenticationException, ValidationException

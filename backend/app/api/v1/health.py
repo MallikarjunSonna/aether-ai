@@ -1,6 +1,6 @@
 """Health check endpoint for Nexus AI."""
 
-from typing import TypedDict
+from typing_extensions import TypedDict
 
 from fastapi import APIRouter
 
