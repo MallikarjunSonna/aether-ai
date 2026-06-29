@@ -5,7 +5,6 @@ import {
   FileText,
   FolderKanban,
   Library,
-  MessageSquare,
   Settings,
 } from "lucide-react";
 import { createBrowserRouter } from "react-router-dom";
@@ -13,6 +12,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { AuthLayout } from "./layouts/AuthLayout";
 import { DashboardLayout } from "./layouts/DashboardLayout";
 import { RootLayout } from "./layouts/RootLayout";
+import { AIChatPage } from "./pages/chat/AIChatPage";
 import { DashboardHome } from "./pages/DashboardHome";
 import { DashboardPage } from "./pages/DashboardPage";
 import { OrganizationsPage } from "./pages/organizations/OrganizationsPage";
@@ -42,7 +42,7 @@ export const router = createBrowserRouter([
         ),
         children: [
           { index: true, element: <DashboardHome /> },
-          { path: "chat", element: <PlaceholderPage title="AI Chat" icon={MessageSquare} /> },
+          { path: "chat", element: <AIChatPage /> },
           { path: "agents", element: <PlaceholderPage title="AI Agents" icon={Bot} /> },
           { path: "prompts", element: <PlaceholderPage title="Prompt Library" icon={FileText} /> },
           { path: "knowledge", element: <PlaceholderPage title="Knowledge Base" icon={Library} /> },
