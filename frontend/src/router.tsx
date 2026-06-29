@@ -6,6 +6,7 @@ import { RootLayout } from "./layouts/RootLayout";
 import { DashboardHome } from "./pages/DashboardHome";
 import { DashboardPage } from "./pages/DashboardPage";
 import { OrganizationsPage } from "./pages/organizations/OrganizationsPage";
+import { WorkspacesPage } from "./pages/workspaces/WorkspacesPage";
 import { ForgotPasswordPage } from "./pages/auth/ForgotPasswordPage";
 import { LoginPage } from "./pages/auth/LoginPage";
 import { RegisterPage } from "./pages/auth/RegisterPage";
@@ -31,6 +32,7 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <DashboardHome /> },
           { path: "organizations", element: <OrganizationsPage /> },
+          { path: "workspaces", element: <WorkspacesPage /> },
         ],
       },
     ],

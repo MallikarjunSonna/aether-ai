@@ -1,0 +1,48 @@
+import type { Workspace } from "../types/workspace";
+
+export const mockWorkspaces: Workspace[] = [
+  {
+    id: "ws-1",
+    name: "Engineering",
+    slug: "engineering",
+    description: "Core platform development, infrastructure, and tooling for the Aether AI ecosystem.",
+    organizationId: "org-1",
+    organizationName: "Aether AI",
+    isActive: true,
+    createdAt: "2025-10-01T08:00:00Z",
+    memberCount: 12,
+  },
+  {
+    id: "ws-2",
+    name: "Research",
+    slug: "research",
+    description: "Exploring frontier AI models, alignment research, and novel architectures.",
+    organizationId: "org-2",
+    organizationName: "Nexus Labs",
+    isActive: false,
+    createdAt: "2025-12-15T10:30:00Z",
+    memberCount: 6,
+  },
+  {
+    id: "ws-3",
+    name: "Marketing",
+    slug: "marketing",
+    description: "Brand strategy, content creation, and go-to-market campaigns.",
+    organizationId: "org-1",
+    organizationName: "Aether AI",
+    isActive: false,
+    createdAt: "2026-02-01T09:00:00Z",
+    memberCount: 4,
+  },
+  {
+    id: "ws-4",
+    name: "Customer Success",
+    slug: "customer-success",
+    description: "Customer onboarding, support, and account management.",
+    organizationId: "org-4",
+    organizationName: "Enterprise Demo",
+    isActive: false,
+    createdAt: "2026-04-10T14:00:00Z",
+    memberCount: 3,
+  },
+];
