@@ -1,7 +1,8 @@
 import { LogOut, Settings, User } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 
 import { useAuth } from "../../hooks/useAuth";
+import { useClickOutside } from "../../hooks/useClickOutside";
 
 export function UserMenu() {
   const { user } = useAuth();
@@ -9,20 +10,7 @@ export function UserMenu() {
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(event.target as Node) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(event.target as Node)
-      ) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  useClickOutside([menuRef, buttonRef], () => setOpen(false));
 
   function handleKeyDown(event: React.KeyboardEvent) {
     if (event.key === "Escape") {

@@ -1,4 +1,5 @@
 import { apiRequest } from "./client";
+import { tokenStorage } from "../services/tokenStorage";
 
 export interface TokenData {
   access_token: string;
@@ -54,7 +55,7 @@ export async function refresh(refreshToken: string): Promise<TokenData> {
 }
 
 export async function logout(): Promise<void> {
-  const refreshToken = localStorage.getItem("aether_refresh_token");
+  const refreshToken = tokenStorage.getRefreshToken();
   await apiRequest<MessageResponse>("/api/v1/auth/logout", {
     method: "POST",
     body: { refresh_token: refreshToken ?? "" },

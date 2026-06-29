@@ -1,6 +1,7 @@
 import { Check, ChevronDown, Layers, Plus, Search } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
+import { useClickOutside } from "../../hooks/useClickOutside";
 import { mockWorkspaces } from "../../mocks/workspaces";
 import type { Workspace } from "../../types/workspace";
 
@@ -15,16 +16,10 @@ export function WorkspaceSwitcher({ onCreate }: WorkspaceSwitcherProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setOpen(false);
-        setQuery("");
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  useClickOutside([containerRef], () => {
+    setOpen(false);
+    setQuery("");
+  });
 
   useEffect(() => {
     if (open) {

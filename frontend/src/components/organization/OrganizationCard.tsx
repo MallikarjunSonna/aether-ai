@@ -1,7 +1,8 @@
 import { Building2, Edit3, Eye, MoreHorizontal, Trash2 } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 
 import type { Organization } from "../../types/organization";
+import { useClickOutside } from "../../hooks/useClickOutside";
 
 interface OrganizationCardProps {
   organization: Organization;
@@ -12,21 +13,7 @@ export function OrganizationCard({ organization }: OrganizationCardProps) {
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    if (!menuOpen) return;
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(event.target as Node) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(event.target as Node)
-      ) {
-        setMenuOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [menuOpen]);
+  useClickOutside([menuRef, buttonRef], () => setMenuOpen(false), menuOpen);
 
   const date = new Date(organization.createdAt).toLocaleDateString("en-US", {
     year: "numeric",

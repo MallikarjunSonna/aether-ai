@@ -2,6 +2,7 @@ import { Building2, Check, ChevronDown, Plus, Search } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 import type { Organization } from "../../types/organization";
+import { useClickOutside } from "../../hooks/useClickOutside";
 import { mockOrganizations } from "../../mocks/organizations";
 
 interface OrganizationSwitcherProps {
@@ -15,16 +16,10 @@ export function OrganizationSwitcher({ onCreate }: OrganizationSwitcherProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setOpen(false);
-        setQuery("");
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  useClickOutside([containerRef], () => {
+    setOpen(false);
+    setQuery("");
+  });
 
   useEffect(() => {
     if (open) {
