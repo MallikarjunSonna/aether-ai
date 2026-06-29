@@ -30,7 +30,7 @@ const navItems: NavItem[] = [
   { label: "Documents", icon: File, href: "/dashboard/documents" },
   { label: "Projects", icon: FolderKanban, href: "/dashboard/projects" },
   { label: "Workspaces", icon: Layers, href: "/dashboard/workspaces" },
-  { label: "Organization", icon: Building2, href: "/dashboard/organization" },
+  { label: "Organization", icon: Building2, href: "/dashboard/organizations" },
   { label: "Analytics", icon: BarChart3, href: "/dashboard/analytics" },
   { label: "Settings", icon: Settings, href: "/dashboard/settings" },
 ];
