@@ -1,4 +1,4 @@
-import type { ChatMessage, ChatResponse, ProviderType } from "../../types/ai";
+import type { AIModel, ChatMessage, ChatResponse, ProviderType } from "../../types/ai";
 import { AnthropicProvider } from "../../providers/AnthropicProvider";
 import { OpenAIProvider } from "../../providers/OpenAIProvider";
 import { AIGateway } from "./AIGateway";
@@ -45,5 +45,17 @@ export class AIChatService {
 
   listProviders(): ProviderType[] {
     return this.gateway.listProviders();
+  }
+
+  async getProviderModels(type: ProviderType): Promise<AIModel[]> {
+    return this.gateway.getProviderModels(type);
+  }
+
+  getProviderName(type: ProviderType): string {
+    return this.gateway.getProviderName(type);
+  }
+
+  async checkProviderHealth(type: ProviderType): Promise<boolean> {
+    return this.gateway.healthCheck(type);
   }
 }

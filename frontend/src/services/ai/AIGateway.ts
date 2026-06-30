@@ -46,4 +46,13 @@ export class AIGateway {
     const provider = this.providers.getProvider(providerType);
     return provider.healthCheck();
   }
+
+  async getProviderModels(type: ProviderType): Promise<AIModel[]> {
+    const provider = this.providers.getProvider(type);
+    return provider.listModels();
+  }
+
+  getProviderName(type: ProviderType): string {
+    return this.providers.getProvider(type).name;
+  }
 }
