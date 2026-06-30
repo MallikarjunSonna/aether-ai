@@ -1,4 +1,5 @@
 import type { ChatMessage, ChatResponse, ProviderType } from "../../types/ai";
+import { AnthropicProvider } from "../../providers/AnthropicProvider";
 import { OpenAIProvider } from "../../providers/OpenAIProvider";
 import { AIGateway } from "./AIGateway";
 import { ModelRegistry } from "./ModelRegistry";
@@ -13,6 +14,9 @@ export class AIChatService {
 
     const openaiProvider = new OpenAIProvider();
     providerRegistry.registerProvider(openaiProvider);
+
+    const anthropicProvider = new AnthropicProvider();
+    providerRegistry.registerProvider(anthropicProvider);
 
     this.gateway = new AIGateway(providerRegistry, modelRegistry);
   }
