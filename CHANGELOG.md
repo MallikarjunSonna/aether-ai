@@ -10,28 +10,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Planned
 
-- Streaming responses
-- Anthropic provider
-- Provider selection
-- Conversation improvements
+- Conversation persistence
+- Markdown rendering and code highlighting
+- RAG (Retrieval-Augmented Generation) pipeline
+- AI Agents
+- Provider plugins
+- Real-time collaboration
 
 ---
 
-## [0.3.0] — AI Chat with OpenAI Provider — 2026-06-30
+## [0.3.0] — Multi-Provider AI Chat — 2026-07-01
 
 ### Added
 
 - OpenAI provider integration with `OpenAIProvider` implementing the `AIProvider` interface
+- Anthropic provider integration with `AnthropicProvider` supporting system message handling
 - `AIChatService` as the UI-facing layer over the AI Gateway
 - `useAIChat` hook for chat state management with loading, error, and message history
+- `useProviderSelection` hook for runtime provider and model switching
+- `ProviderSelector` component with health status and streaming capability indicators
 - Enterprise AI Chat UI with dedicated page at `/dashboard/chat`
 - Chat components: `ChatEmptyState`, `ChatMessage`, `ChatMessages`, `ChatInput`, `ChatLayout`
+- Streaming response support across all providers via async iterables
 - Provider-neutral error mapping that translates SDK errors into user-friendly messages
+- Real-time token-by-token streaming with abort/cancellation support
 
 ### Changed
 
-- AI Gateway validated end-to-end with a real provider (OpenAI)
-- OpenAI model IDs verified against the official SDK `ChatModel` type — all current models confirmed present
+- AI Gateway validated end-to-end with OpenAI and Anthropic providers
+- AI Chat architecture now supports runtime provider selection without UI provider-specific logic
+- OpenAI model IDs verified against the official SDK `ChatModel` type
 
 ---
 
@@ -78,7 +86,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Docker setup with `docker-compose.yml` for local development
 - Initial CI configuration with linting, type checking, and test execution
 
-[Unreleased]: https://github.com/your-org/aether-ai/compare/v0.3.0...HEAD
-[0.3.0]: https://github.com/your-org/aether-ai/releases/tag/v0.3.0
-[0.2.0]: https://github.com/your-org/aether-ai/releases/tag/v0.2.0
-[0.1.0]: https://github.com/your-org/aether-ai/releases/tag/v0.1.0
+[Unreleased]: https://github.com/MallikarjunSonna/aether-ai/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/MallikarjunSonna/aether-ai/releases/tag/v0.3.0
+[0.2.0]: https://github.com/MallikarjunSonna/aether-ai/releases/tag/v0.2.0
+[0.1.0]: https://github.com/MallikarjunSonna/aether-ai/releases/tag/v0.1.0

@@ -55,7 +55,7 @@ Scopes: `api`, `auth`, `ui`, `deps`, `config`, `ci`, `docs`, etc.
 
 - TypeScript strict mode is enabled. Avoid `any` (warn-level rule).
 - Use named exports for components and utilities.
-- Preter and ESLint enforce style and quality — run `npm run lint` and `npm run format:check`.
+- Prettier and ESLint enforce style and quality — run `npm run lint` and `npm run format:check`.
 - Use React Testing Library and `user-event` for component tests.
 - Prefer functional components with hooks over class components.
 

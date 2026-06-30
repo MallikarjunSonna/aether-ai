@@ -2,7 +2,7 @@
 
 > Enterprise AI workspace platform.
 
-[![Release](https://img.shields.io/badge/release-v0.2.0-blueviolet)](https://github.com/your-org/aether-ai/releases)
+[![Release](https://img.shields.io/badge/release-v0.3.0-blueviolet)](https://github.com/MallikarjunSonna/aether-ai/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi)](https://fastapi.tiangolo.com)
@@ -15,6 +15,9 @@ A provider-agnostic AI workspace platform with built-in authentication, organiza
 
 - **JWT Authentication** — Access/refresh token flow with Argon2 password hashing
 - **User Management** — Registration, login, logout, and profile management
+- **AI Gateway** — Provider-agnostic architecture with pluggable AI providers
+- **Multi-Provider AI** — OpenAI and Anthropic with runtime provider selection
+- **Streaming Responses** — Real-time token-by-token streaming via SSE-like async iterables
 - **Modular Architecture** — Separated concerns with repositories, services, and API layers
 - **Async by Default** — Async SQLAlchemy sessions and FastAPI async endpoints
 - **Type-Safe** — Pydantic v2 schemas, TypeScript frontend, and shared type contracts
@@ -28,49 +31,48 @@ A provider-agnostic AI workspace platform with built-in authentication, organiza
 Browser
    │
    ▼
-┌──────────────────────┐
-│   React (TypeScript)  │
-│   ├── Auth Context    │
-│   ├── useAuth Hook    │
-│   ├── API Client      │
-│   └── AI Service      │
-└─────────┬────────────┘
-          │ HTTP / JSON
-          ▼
-┌──────────────────────┐
-│   FastAPI (Python)    │
-│   ├── API Routes v1   │
-│   ├── Auth            │
-│   ├── Services        │
-│   └── Repositories    │
-└─────────┬────────────┘
-          │
-          ▼
-┌──────────────────────┐
-│   AI Gateway          │
-│   (Provider-Agnostic) │
-│                       │
-│  ┌─────────────────┐  │
-│  │ ProviderRegistry│  │
-│  │ ModelRegistry   │  │
-│  └────────┬────────┘  │
-│           │           │
-│  ┌────────▼────────┐  │
-│  │  AIProvider     │  │
-│  │  Interface      │  │
-│  └────────┬────────┘  │
-│           │           │
-│  ┌────────▼────────┐  │
-│  │  MockProvider   │  │
-│  └─────────────────┘  │
-└─────────┬────────────┘
-          │
-          ▼
-┌──────────────────────┐
-│   PostgreSQL          │
-└──────────────────────┘
-
-Future Providers: OpenAI · Anthropic · Gemini · Ollama · Azure OpenAI
+┌────────────────────────────┐
+│   React (TypeScript)       │
+│   ├── Auth Context         │
+│   ├── useAIChat Hook       │
+│   ├── useProviderSelection │
+│   ├── API Client           │
+│   └── ProviderSelector     │
+└─────────────┬──────────────┘
+              │ HTTP / JSON
+              ▼
+┌────────────────────────────┐
+│   FastAPI (Python)         │
+│   ├── API Routes v1        │
+│   ├── Auth                 │
+│   ├── Services             │
+│   └── Repositories         │
+└─────────────┬──────────────┘
+              │
+              ▼
+┌────────────────────────────┐
+│   AI Gateway               │
+│   (Provider-Agnostic)      │
+│                            │
+│  ┌──────────────────────┐  │
+│  │ ProviderRegistry     │  │
+│  │ ModelRegistry        │  │
+│  └──────────┬───────────┘  │
+│             │              │
+│  ┌──────────▼───────────┐  │
+│  │  AIProvider Interface│  │
+│  └──────────┬───────────┘  │
+│             │              │
+│  ┌──────────┼──────────┐   │
+│  ▼          ▼          ▼   │
+│ OpenAI   Anthropic   Mock  │
+│ Provider Provider   Provider│
+└────────────────────────────┘
+              │
+              ▼
+┌────────────────────────────┐
+│   PostgreSQL               │
+└────────────────────────────┘
 ```
 
 ## Technology Stack
@@ -134,14 +136,18 @@ aether-ai/
 │   ├── src/
 │   │   ├── api/                    # API client and auth API functions
 │   │   ├── components/             # Reusable UI components
+│   │   │   └── chat/               # AI Chat UI (ProviderSelector, ChatLayout, etc.)
+│   │   ├── constants/              # Application constants
 │   │   ├── contexts/               # React Context providers
-│   │   ├── hooks/                  # Custom React hooks
+│   │   ├── hooks/                  # Custom React hooks (useAIChat, useProviderSelection, etc.)
 │   │   ├── layouts/                # Layout components
 │   │   ├── lib/                    # Third-party library configs
 │   │   ├── pages/                  # Page components
+│   │   ├── providers/              # AI provider implementations (OpenAI, Anthropic, Mock)
 │   │   ├── routes/                 # Route guards
-│   │   ├── services/               # Client-side services (token storage)
+│   │   ├── services/               # Client-side services (AIChatService, token storage, AI Gateway)
 │   │   ├── styles/                 # Design tokens, theme, global CSS
+│   │   ├── types/                  # TypeScript type definitions
 │   │   ├── App.tsx
 │   │   ├── main.tsx
 │   │   └── router.tsx
@@ -181,7 +187,7 @@ The API is available at `http://localhost:8000` and the frontend at `http://loca
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/aether-ai.git
+git clone https://github.com/MallikarjunSonna/aether-ai.git
 cd aether-ai/backend
 
 # Create and activate a virtual environment
@@ -222,9 +228,11 @@ cp .env.example .env
 
 ### Frontend (`frontend/.env`)
 
-| Variable             | Description                  | Default                 |
-|----------------------|------------------------------|-------------------------|
-| `VITE_API_BASE_URL`  | Backend API base URL         | `http://localhost:8000` |
+| Variable                  | Description                  | Default                 |
+|---------------------------|------------------------------|-------------------------|
+| `VITE_API_BASE_URL`       | Backend API base URL         | `http://localhost:8000` |
+| `VITE_OPENAI_API_KEY`     | OpenAI API key (optional)    | —                       |
+| `VITE_ANTHROPIC_API_KEY`  | Anthropic API key (optional) | —                       |
 
 ## Running Locally
 
@@ -308,11 +316,13 @@ Every push and pull request triggers GitHub Actions to run:
 - [x] Organization and workspace management
 - [x] Role-based access control (RBAC)
 - [x] AI Gateway foundation, Provider Registry, Model Registry
+- [x] OpenAI provider integration
+- [x] Anthropic provider integration
+- [x] Streaming responses
+- [x] AI Chat interface with provider selection
 - [ ] Member management and invitations
-- [ ] OpenAI provider integration
-- [ ] Anthropic provider integration
-- [ ] Streaming responses
-- [ ] AI Chat interface
+- [ ] Conversation persistence
+- [ ] Markdown rendering and code highlighting
 - [ ] RAG (Retrieval-Augmented Generation) pipeline
 - [ ] AI Agents
 - [ ] Real-time collaboration
