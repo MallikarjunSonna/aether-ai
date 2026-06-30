@@ -1,13 +1,15 @@
 # Aether AI
 
-[![Build Status]](https://github.com/your-org/aether-ai/actions)
-[![Coverage]](https://github.com/your-org/aether-ai/actions)
-[![License: MIT]](./LICENSE)
-[![Python 3.11+]](https://www.python.org)
-[![React 19+]](https://react.dev)
-[![TypeScript]](https://www.typescriptlang.org)
+> Enterprise AI workspace platform.
 
-Enterprise-grade AI application foundation with a FastAPI backend and React frontend, featuring built-in authentication, user management, and a scalable architecture.
+[![Release](https://img.shields.io/badge/release-v0.2.0-blueviolet)](https://github.com/your-org/aether-ai/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi)](https://fastapi.tiangolo.com)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript)](https://www.typescriptlang.org)
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python)](https://www.python.org)
+
+A provider-agnostic AI workspace platform with built-in authentication, organization management, role-based access control, and a pluggable AI Gateway architecture. Backend built with FastAPI and SQLAlchemy; frontend built with React 19, TypeScript, and Tailwind CSS.
 
 ## Key Features
 
@@ -26,38 +28,49 @@ Enterprise-grade AI application foundation with a FastAPI backend and React fron
 Browser
    │
    ▼
-┌─────────────────────────────┐
-│       React (Vite)          │
-│  ┌───────────────────────┐  │
-│  │    Auth Context        │  │
-│  │    useAuth Hook        │  │
-│  └──────────┬────────────┘  │
-│  ┌──────────▼────────────┐  │
-│  │    API Client          │  │
-│  │    (fetch / axios)     │  │
-│  └──────────┬────────────┘  │
-└─────────────┼───────────────┘
-              │ HTTP / JSON
-              ▼
-┌─────────────────────────────┐
-│       FastAPI (Python)      │
-│  ┌───────────────────────┐  │
-│  │   API Routes (v1)     │  │
-│  ├───────────────────────┤  │
-│  │   Auth Dependencies   │  │
-│  ├───────────────────────┤  │
-│  │     Services          │  │
-│  ├───────────────────────┤  │
-│  │   Repositories        │  │
-│  ├───────────────────────┤  │
-│  │   SQLAlchemy ORM      │  │
-│  └──────────┬────────────┘  │
-└─────────────┼───────────────┘
-              │
-              ▼
-      ┌───────────────┐
-      │  PostgreSQL   │
-      └───────────────┘
+┌──────────────────────┐
+│   React (TypeScript)  │
+│   ├── Auth Context    │
+│   ├── useAuth Hook    │
+│   ├── API Client      │
+│   └── AI Service      │
+└─────────┬────────────┘
+          │ HTTP / JSON
+          ▼
+┌──────────────────────┐
+│   FastAPI (Python)    │
+│   ├── API Routes v1   │
+│   ├── Auth            │
+│   ├── Services        │
+│   └── Repositories    │
+└─────────┬────────────┘
+          │
+          ▼
+┌──────────────────────┐
+│   AI Gateway          │
+│   (Provider-Agnostic) │
+│                       │
+│  ┌─────────────────┐  │
+│  │ ProviderRegistry│  │
+│  │ ModelRegistry   │  │
+│  └────────┬────────┘  │
+│           │           │
+│  ┌────────▼────────┐  │
+│  │  AIProvider     │  │
+│  │  Interface      │  │
+│  └────────┬────────┘  │
+│           │           │
+│  ┌────────▼────────┐  │
+│  │  MockProvider   │  │
+│  └─────────────────┘  │
+└─────────┬────────────┘
+          │
+          ▼
+┌──────────────────────┐
+│   PostgreSQL          │
+└──────────────────────┘
+
+Future Providers: OpenAI · Anthropic · Gemini · Ollama · Azure OpenAI
 ```
 
 ## Technology Stack
@@ -153,6 +166,14 @@ aether-ai/
 - Node.js 22 LTS
 - PostgreSQL 16+ (or Docker for local dev)
 - Git
+
+## Run with Docker
+
+```bash
+docker compose up --build
+```
+
+The API is available at `http://localhost:8000` and the frontend at `http://localhost:5173`.
 
 ## Installation
 
@@ -283,11 +304,17 @@ Every push and pull request triggers GitHub Actions to run:
 - [x] Authentication (register, login, logout, refresh)
 - [x] Testing foundation and auth tests
 - [x] Code quality tooling and CI pipeline
-- [ ] Dashboard and user profile pages
-- [ ] Organization and workspace management
+- [x] Dashboard shell and widget system
+- [x] Organization and workspace management
+- [x] Role-based access control (RBAC)
+- [x] AI Gateway foundation, Provider Registry, Model Registry
 - [ ] Member management and invitations
-- [ ] AI agent integration
+- [ ] OpenAI provider integration
+- [ ] Anthropic provider integration
+- [ ] Streaming responses
+- [ ] AI Chat interface
 - [ ] RAG (Retrieval-Augmented Generation) pipeline
+- [ ] AI Agents
 - [ ] Real-time collaboration
 
 ## Contributing

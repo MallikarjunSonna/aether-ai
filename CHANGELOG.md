@@ -6,6 +6,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [Unreleased]
+
+### Planned
+
+- Streaming responses
+- Anthropic provider
+- Provider selection
+- Conversation improvements
+
+---
+
+## [0.3.0] — AI Chat with OpenAI Provider — 2026-06-30
+
+### Added
+
+- OpenAI provider integration with `OpenAIProvider` implementing the `AIProvider` interface
+- `AIChatService` as the UI-facing layer over the AI Gateway
+- `useAIChat` hook for chat state management with loading, error, and message history
+- Enterprise AI Chat UI with dedicated page at `/dashboard/chat`
+- Chat components: `ChatEmptyState`, `ChatMessage`, `ChatMessages`, `ChatInput`, `ChatLayout`
+- Provider-neutral error mapping that translates SDK errors into user-friendly messages
+
+### Changed
+
+- AI Gateway validated end-to-end with a real provider (OpenAI)
+- OpenAI model IDs verified against the official SDK `ChatModel` type — all current models confirmed present
+
+---
+
 ## [0.2.0] — Enterprise Platform Foundation — 2026-06-29
 
 ### Added
@@ -48,3 +77,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Project documentation including architecture overview, backend structure, and roadmap
 - Docker setup with `docker-compose.yml` for local development
 - Initial CI configuration with linting, type checking, and test execution
+
+[Unreleased]: https://github.com/your-org/aether-ai/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/your-org/aether-ai/releases/tag/v0.3.0
+[0.2.0]: https://github.com/your-org/aether-ai/releases/tag/v0.2.0
+[0.1.0]: https://github.com/your-org/aether-ai/releases/tag/v0.1.0
