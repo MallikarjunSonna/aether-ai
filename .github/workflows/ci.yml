@@ -41,11 +41,11 @@ jobs:
         run: isort --check-only app/ tests/
 
       - name: pytest
-        run: pytest --tb=long 2>&1 | tee pytest_output.txt
+        run: pytest --tb=long 2>&1 | tee pytest_output.txt; exit ${PIPESTATUS[0]}
 
       - name: pytest --cov=app
         if: always()
-        run: pytest --cov=app --cov-report=term-missing 2>&1 | tee pytest_cov_output.txt
+        run: pytest --cov=app --cov-report=term-missing 2>&1 | tee pytest_cov_output.txt; exit ${PIPESTATUS[0]}
 
       - name: Upload pytest output
         if: always()
