@@ -41,10 +41,20 @@ jobs:
         run: isort --check-only app/ tests/
 
       - name: pytest
-        run: pytest
+        run: pytest --tb=long 2>&1 | tee pytest_output.txt
 
       - name: pytest --cov=app
-        run: pytest --cov=app --cov-report=term-missing
+        if: always()
+        run: pytest --cov=app --cov-report=term-missing 2>&1 | tee pytest_cov_output.txt
+
+      - name: Upload pytest output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-outputs
+          path: |
+            backend/pytest_output.txt
+            backend/pytest_cov_output.txt
 
   frontend:
     name: Frontend (Node.js 22 LTS)
