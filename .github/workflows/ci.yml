@@ -29,7 +29,7 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install backend
-        run: pip install -e ".[test,dev]"
+        run: pip install --no-cache-dir -e ".[test,dev]"
 
       - name: ruff check
         run: ruff check app/ tests/
@@ -40,11 +40,8 @@ jobs:
       - name: isort --check-only
         run: isort --check-only app/ tests/
 
-      - name: pip list
-        run: pip list
-
       - name: pytest
-        run: pytest -v
+        run: pytest
 
       - name: pytest --cov=app
         run: pytest --cov=app --cov-report=term-missing
