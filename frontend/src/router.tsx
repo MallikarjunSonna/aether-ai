@@ -13,7 +13,7 @@ import { RootLayout } from "./layouts/RootLayout";
 import { AIChatPage } from "./pages/chat/AIChatPage";
 import { DashboardHome } from "./pages/DashboardHome";
 import { DashboardPage } from "./pages/DashboardPage";
-import { WorkspaceMemoryPage } from "./pages/memory/WorkspaceMemoryPage";
+import { KnowledgeHubPage } from "./pages/knowledge/KnowledgeHubPage";
 import { OrganizationsPage } from "./pages/organizations/OrganizationsPage";
 import { PlaceholderPage } from "./pages/placeholder/PlaceholderPage";
 import { PromptLibraryPage } from "./pages/prompts/PromptLibraryPage";
@@ -45,7 +45,7 @@ export const router = createBrowserRouter([
           { path: "chat", element: <AIChatPage /> },
           { path: "agents", element: <PlaceholderPage title="AI Agents" icon={Bot} /> },
           { path: "prompts", element: <PromptLibraryPage /> },
-          { path: "knowledge", element: <WorkspaceMemoryPage /> },
+          { path: "knowledge", element: <KnowledgeHubPage /> },
           { path: "documents", element: <PlaceholderPage title="Documents" icon={File} /> },
           { path: "projects", element: <PlaceholderPage title="Projects" icon={FolderKanban} /> },
           { path: "organizations", element: <OrganizationsPage /> },
