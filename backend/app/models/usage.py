@@ -2,9 +2,10 @@
 
 from datetime import datetime
 
-from app.models.base import BaseModel
 from sqlalchemy import DateTime, Float, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
+
+from app.models.base import BaseModel
 
 
 class UsageRecord(BaseModel):

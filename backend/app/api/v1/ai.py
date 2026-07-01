@@ -143,11 +143,13 @@ async def chat_stream(request: ChatRequest) -> StreamingResponse:
 
             yield "data: [DONE]\n\n"
         except AIProviderError as exc:
-            error_data = json.dumps({
-                "error": exc.code,
-                "message": exc.message,
-                "provider": exc.provider,
-            })
+            error_data = json.dumps(
+                {
+                    "error": exc.code,
+                    "message": exc.message,
+                    "provider": exc.provider,
+                }
+            )
             yield f"data: {error_data}\n\n"
             yield "data: [DONE]\n\n"
 

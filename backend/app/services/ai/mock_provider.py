@@ -48,6 +48,7 @@ MODELS: list[AIModel] = [
 def _generate_id() -> str:
     import random
     import time
+
     return f"mock-{int(time.time() * 1000)}-{random.random():.9f}".split(".")[1]
 
 
@@ -92,7 +93,7 @@ class MockProvider(AIProvider):
         else:
             prefix = f"[Context: {system_msg.content[:40]}...]\n" if system_msg else ""
             content = (
-                f"{prefix}You said: \"{prompt[:100]}\"\n\n"
+                f'{prefix}You said: "{prompt[:100]}"\n\n'
                 "This is a deterministic response from the Aether AI Mock Provider. "
                 "Configure a real provider (OpenAI, Anthropic, etc.) to receive "
                 "AI-generated responses."

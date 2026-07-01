@@ -111,14 +111,14 @@ class AIGateway:
 
     def _build_gateway(self) -> None:
         """Initialize providers and register their models."""
+        from app.services.ai.anthropic_provider import MODELS as ANTHROPIC_MODELS
         from app.services.ai.anthropic_provider import AnthropicProvider
+        from app.services.ai.mock_provider import MODELS as MOCK_MODELS
         from app.services.ai.mock_provider import MockProvider
+        from app.services.ai.openai_provider import MODELS as OPENAI_MODELS
         from app.services.ai.openai_provider import (
             OpenAIProvider,
-            MODELS as OPENAI_MODELS,
         )
-        from app.services.ai.anthropic_provider import MODELS as ANTHROPIC_MODELS
-        from app.services.ai.mock_provider import MODELS as MOCK_MODELS
 
         openai = OpenAIProvider()
         anthropic = AnthropicProvider()

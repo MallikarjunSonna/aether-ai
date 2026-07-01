@@ -159,8 +159,10 @@ class AnthropicProvider(AIProvider):
             )
 
             async for event in stream:
-                if (event.type == "content_block_delta"
-                        and event.delta.type == "text_delta"):
+                if (
+                    event.type == "content_block_delta"
+                    and event.delta.type == "text_delta"
+                ):
                     yield event.delta.text, None
 
         except Exception as exc:
