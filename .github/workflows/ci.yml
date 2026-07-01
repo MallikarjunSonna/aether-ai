@@ -29,7 +29,13 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install backend
-        run: pip install --no-cache-dir -e ".[test,dev]"
+        run: pip install -e ".[test,dev]"
+
+      - name: Debug info
+        run: |
+          python --version 2>&1 | tee debug_output.txt
+          pip freeze 2>&1 | tee -a debug_output.txt
+          python -c "import app; print('app OK')" 2>&1 | tee -a debug_output.txt
 
       - name: ruff check
         run: ruff check app/ tests/
@@ -55,6 +61,7 @@ jobs:
           path: |
             backend/pytest_output.txt
             backend/pytest_cov_output.txt
+            backend/debug_output.txt
 
   frontend:
     name: Frontend (Node.js 22 LTS)
