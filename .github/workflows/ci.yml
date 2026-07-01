@@ -31,12 +31,6 @@ jobs:
       - name: Install backend
         run: pip install -e ".[test,dev]"
 
-      - name: Debug info
-        run: |
-          python --version 2>&1 | tee debug_output.txt
-          pip freeze 2>&1 | tee -a debug_output.txt
-          python -c "import app; print('app OK')" 2>&1 | tee -a debug_output.txt
-
       - name: ruff check
         run: ruff check app/ tests/
 
@@ -47,21 +41,10 @@ jobs:
         run: isort --check-only app/ tests/
 
       - name: pytest
-        run: pytest --tb=long 2>&1 | tee pytest_output.txt; exit ${PIPESTATUS[0]}
+        run: pytest
 
       - name: pytest --cov=app
-        if: always()
-        run: pytest --cov=app --cov-report=term-missing 2>&1 | tee pytest_cov_output.txt; exit ${PIPESTATUS[0]}
-
-      - name: Upload pytest output
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pytest-outputs
-          path: |
-            backend/pytest_output.txt
-            backend/pytest_cov_output.txt
-            backend/debug_output.txt
+        run: pytest --cov=app --cov-report=term-missing
 
   frontend:
     name: Frontend (Node.js 22 LTS)
