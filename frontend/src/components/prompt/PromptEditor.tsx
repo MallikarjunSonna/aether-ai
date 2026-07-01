@@ -1,7 +1,18 @@
-import { FileText, X } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Eye,
+  FileText,
+  History,
+  X,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import type { Prompt, PromptCategory, PromptVisibility, UpdatePromptRequest } from "../../types/prompt";
+import { TemplatePreview } from "./TemplatePreview";
+import { TemplatePublishControls } from "./TemplatePublishControls";
+import { TemplateValidationBadge } from "./TemplateValidationBadge";
+import { TemplateVersionHistory } from "./TemplateVersionHistory";
 
 const categoryOptions: { value: PromptCategory; label: string }[] = [
   { value: "code-review", label: "Code Review" },
@@ -36,6 +47,8 @@ interface PromptEditorProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (id: string, request: UpdatePromptRequest) => void;
+  onPublish: (id: string) => void;
+  onDraft: (id: string) => void;
 }
 
 interface FormErrors {
@@ -43,7 +56,7 @@ interface FormErrors {
   content?: string;
 }
 
-export function PromptEditor({ prompt, open, onClose, onSubmit }: PromptEditorProps) {
+export function PromptEditor({ prompt, open, onClose, onSubmit, onPublish, onDraft }: PromptEditorProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const firstFieldRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState(prompt.title);
@@ -53,6 +66,9 @@ export function PromptEditor({ prompt, open, onClose, onSubmit }: PromptEditorPr
   const [tagsInput, setTagsInput] = useState(prompt.tags.join(", "));
   const [visibility, setVisibility] = useState<PromptVisibility>(prompt.visibility);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [showPreview, setShowPreview] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [status, setStatus] = useState(prompt.status);
 
   const detectedVariables = extractVariables(content);
 
@@ -95,6 +111,16 @@ export function PromptEditor({ prompt, open, onClose, onSubmit }: PromptEditorPr
     onClose();
   }
 
+  function handlePublish() {
+    onPublish(prompt.id);
+    setStatus("published");
+  }
+
+  function handleDraft() {
+    onDraft(prompt.id);
+    setStatus("draft");
+  }
+
   if (!open) return null;
 
   return (
@@ -108,21 +134,27 @@ export function PromptEditor({ prompt, open, onClose, onSubmit }: PromptEditorPr
         if (e.target === overlayRef.current) onClose();
       }}
     >
-      <div className="w-full max-w-2xl rounded-xl border border-line bg-surface shadow-lg max-h-[90vh] flex flex-col">
+      <div className="w-full max-w-3xl rounded-xl border border-line bg-surface shadow-lg max-h-[90vh] flex flex-col">
         <div className="flex items-center justify-between border-b border-line/60 px-6 py-4 shrink-0">
           <div className="flex items-center gap-3">
             <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
               <FileText className="h-5 w-5" aria-hidden="true" />
             </span>
-            <h2 className="text-base font-semibold text-ink">Edit Prompt</h2>
+            <div>
+              <h2 className="text-base font-semibold text-ink">Edit Prompt</h2>
+              <p className="text-[11px] text-muted">v{prompt.version}</p>
+            </div>
           </div>
-          <button
-            onClick={onClose}
-            aria-label="Close modal"
-            className="flex h-8 w-8 items-center justify-center rounded text-muted transition-colors duration-fast hover:bg-neutral-800 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-          >
-            <X className="h-4 w-4" aria-hidden="true" />
-          </button>
+          <div className="flex items-center gap-3">
+            <TemplatePublishControls status={status} onPublish={handlePublish} onDraft={handleDraft} />
+            <button
+              onClick={onClose}
+              aria-label="Close modal"
+              className="flex h-8 w-8 items-center justify-center rounded text-muted transition-colors duration-fast hover:bg-neutral-800 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5 px-6 py-5 overflow-y-auto flex-1">
@@ -179,6 +211,8 @@ export function PromptEditor({ prompt, open, onClose, onSubmit }: PromptEditorPr
               </p>
             )}
           </div>
+
+          <TemplateValidationBadge content={content} />
 
           {detectedVariables.length > 0 && (
             <div>
@@ -251,6 +285,40 @@ export function PromptEditor({ prompt, open, onClose, onSubmit }: PromptEditorPr
               className="mt-1.5 block h-10 w-full rounded-md border border-line bg-canvas px-3 text-sm text-ink placeholder:text-muted transition-colors duration-fast focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
             <p className="mt-1 text-xs text-muted">Comma-separated list of tags.</p>
+          </div>
+
+          <div className="border-t border-line/60 pt-4 space-y-3">
+            <button
+              type="button"
+              onClick={() => setShowPreview(!showPreview)}
+              className="inline-flex items-center gap-2 text-sm font-medium text-ink hover:text-primary transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+            >
+              {showPreview ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+              <Eye className="h-4 w-4" aria-hidden="true" />
+              Preview
+            </button>
+            {showPreview && (
+              <div className="pl-5">
+                <TemplatePreview content={content} />
+              </div>
+            )}
+          </div>
+
+          <div className="border-t border-line/60 pt-4 space-y-3">
+            <button
+              type="button"
+              onClick={() => setShowHistory(!showHistory)}
+              className="inline-flex items-center gap-2 text-sm font-medium text-ink hover:text-primary transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+            >
+              {showHistory ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+              <History className="h-4 w-4" aria-hidden="true" />
+              Version History ({prompt.versionHistory.length})
+            </button>
+            {showHistory && (
+              <div className="pl-5">
+                <TemplateVersionHistory versions={prompt.versionHistory} />
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-end gap-3 border-t border-line/60 pt-4">

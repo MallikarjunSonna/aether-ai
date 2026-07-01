@@ -74,6 +74,22 @@ export function usePromptLibrary() {
     return created;
   }, []);
 
+  const publishPrompt = useCallback((id: string): Prompt | null => {
+    const updated = promptService.publishPrompt(id);
+    if (updated) {
+      setPrompts((prev) => prev.map((p) => (p.id === id ? updated : p)));
+    }
+    return updated;
+  }, []);
+
+  const draftPrompt = useCallback((id: string): Prompt | null => {
+    const updated = promptService.draftPrompt(id);
+    if (updated) {
+      setPrompts((prev) => prev.map((p) => (p.id === id ? updated : p)));
+    }
+    return updated;
+  }, []);
+
   return {
     prompts: filteredPrompts,
     allPrompts: prompts,
@@ -90,5 +106,7 @@ export function usePromptLibrary() {
     deletePrompt,
     toggleFavorite,
     duplicatePrompt,
+    publishPrompt,
+    draftPrompt,
   };
 }

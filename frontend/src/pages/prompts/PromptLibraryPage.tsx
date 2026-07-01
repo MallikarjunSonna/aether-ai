@@ -24,6 +24,8 @@ export function PromptLibraryPage() {
     deletePrompt,
     toggleFavorite,
     duplicatePrompt,
+    publishPrompt,
+    draftPrompt,
   } = usePromptLibrary();
 
   const [createOpen, setCreateOpen] = useState(false);
@@ -109,6 +111,8 @@ export function PromptLibraryPage() {
           open={editingPrompt.open}
           onClose={() => setEditingPrompt({ open: false, id: "" })}
           onSubmit={handleSubmitEdit}
+          onPublish={publishPrompt}
+          onDraft={draftPrompt}
         />
       )}
     </div>

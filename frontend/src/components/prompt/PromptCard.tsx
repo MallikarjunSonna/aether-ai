@@ -54,6 +54,11 @@ export function PromptCard({
           <div className="mt-1.5 flex items-center gap-2">
             <PromptCategoryBadge category={prompt.category} />
             <span className="text-[11px] text-muted">v{prompt.version}</span>
+            {prompt.status === "draft" && (
+              <span className="inline-flex items-center rounded border border-amber-600/30 bg-amber-600/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-400">
+                Draft
+              </span>
+            )}
           </div>
 
           {prompt.description && (

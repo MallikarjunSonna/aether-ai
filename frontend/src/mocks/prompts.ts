@@ -1,4 +1,17 @@
-import type { Prompt } from "../types/prompt";
+import type { Prompt, PromptVersion } from "../types/prompt";
+
+function makeVersion(
+  id: string,
+  promptId: string,
+  version: number,
+  content: string,
+  changelog: string,
+  createdBy: string,
+  createdAt: string,
+): PromptVersion {
+  const variables = content.match(/\{\{(\w+)\}\}/g)?.map((v) => v.slice(2, -2)) ?? [];
+  return { id, promptId, version, content, variables, changelog, createdBy, createdAt };
+}
 
 export const mockPrompts: Prompt[] = [
   {
@@ -13,6 +26,7 @@ export const mockPrompts: Prompt[] = [
     tags: ["code-review", "security", "best-practices", "pull-request"],
     variables: ["company", "language", "tone", "audience", "diff"],
     version: 3,
+    status: "published",
     favorite: true,
     visibility: "organization",
     organizationId: "org-1",
@@ -20,6 +34,11 @@ export const mockPrompts: Prompt[] = [
     createdBy: "Alice Chen",
     createdAt: "2025-10-12T09:00:00Z",
     updatedAt: "2026-06-15T14:30:00Z",
+    versionHistory: [
+      makeVersion("pv-1-1", "prompt-1", 1, 'You are a senior engineer reviewing a pull request.\n\nReview the following diff with focus on:\n1. Security vulnerabilities\n2. Performance implications\n3. Code style\n\n```diff\n{{diff}}\n```', "Initial version", "Alice Chen", "2025-10-12T09:00:00Z"),
+      makeVersion("pv-1-2", "prompt-1", 2, 'You are a senior engineer reviewing a pull request for {{company}}.\n\nReview the following diff with focus on:\n1. Security vulnerabilities\n2. Performance implications\n3. Code style and maintainability\n4. Test coverage\n\nBe {{tone}} in your feedback.\n\n```diff\n{{diff}}\n```', "Added company context, tone parameter, and test coverage section", "Alice Chen", "2026-03-10T11:00:00Z"),
+      makeVersion("pv-1-3", "prompt-1", 3, 'You are a senior engineer reviewing a pull request for {{company}} written in {{language}}.\n\nReview the following diff with focus on:\n1. Security vulnerabilities\n2. Performance implications\n3. Code style and maintainability\n4. Test coverage\n5. Edge cases\n\nBe {{tone}} in your feedback and tailor your response for a {{audience}} audience.\n\n```diff\n{{diff}}\n```\n\nProvide a summary with severity levels for each finding.', "Added language and audience parameters, severity levels", "Alice Chen", "2026-06-15T14:30:00Z"),
+    ],
   },
   {
     id: "prompt-2",
@@ -33,6 +52,7 @@ export const mockPrompts: Prompt[] = [
     tags: ["debugging", "error-analysis", "root-cause", "troubleshooting"],
     variables: ["company", "language", "code", "error", "tone", "audience"],
     version: 2,
+    status: "published",
     favorite: false,
     visibility: "organization",
     organizationId: "org-1",
@@ -40,6 +60,10 @@ export const mockPrompts: Prompt[] = [
     createdBy: "Bob Martinez",
     createdAt: "2025-11-05T11:00:00Z",
     updatedAt: "2026-05-20T09:15:00Z",
+    versionHistory: [
+      makeVersion("pv-2-1", "prompt-2", 1, 'You are a debugging expert. Explain the following bug:\n\n```{{language}}\n{{code}}\n```\n\nError: {{error}}\n\nExplain:\n1. What the bug does in simple terms\n2. Root cause analysis\n3. How to prevent similar bugs', "Initial version", "Bob Martinez", "2025-11-05T11:00:00Z"),
+      makeVersion("pv-2-2", "prompt-2", 2, 'You are a debugging expert at {{company}}. Explain the following bug in {{language}} code:\n\n```{{language}}\n{{code}}\n```\n\nError: {{error}}\n\nExplain:\n1. What the bug does in simple terms\n2. Root cause analysis\n3. Impact on the system\n4. Suggested fix with example code\n5. How to prevent similar bugs\n\nBe {{tone}} and assume the reader has {{audience}} experience level.', "Added company context, impact analysis, suggested fix, tone, and audience", "Bob Martinez", "2026-05-20T09:15:00Z"),
+    ],
   },
   {
     id: "prompt-3",
@@ -53,6 +77,7 @@ export const mockPrompts: Prompt[] = [
     tags: ["sql", "database", "query-optimization", "data-analysis"],
     variables: ["dialect", "request", "schemas"],
     version: 4,
+    status: "published",
     favorite: true,
     visibility: "workspace",
     organizationId: "org-1",
@@ -60,6 +85,12 @@ export const mockPrompts: Prompt[] = [
     createdBy: "Alice Chen",
     createdAt: "2025-09-20T08:00:00Z",
     updatedAt: "2026-06-10T11:00:00Z",
+    versionHistory: [
+      makeVersion("pv-3-1", "prompt-3", 1, 'You are a senior database engineer. Convert the following request into a {{dialect}} SQL query:\n\nRequest: {{request}}', "Initial version", "Alice Chen", "2025-09-20T08:00:00Z"),
+      makeVersion("pv-3-2", "prompt-3", 2, 'You are a senior database engineer. Convert the following request into a {{dialect}} SQL query:\n\nRequest: {{request}}\n\nRequirements:\n- Use {{dialect}} syntax\n- Optimize for performance\n- Include indexing suggestions\n\nTable schemas:\n{{schemas}}', "Added requirements section and table schemas parameter", "Alice Chen", "2026-01-15T10:00:00Z"),
+      makeVersion("pv-3-3", "prompt-3", 3, 'You are a senior database engineer. Convert the following request into a {{dialect}} SQL query:\n\nRequest: {{request}}\n\nRequirements:\n- Use {{dialect}} syntax\n- Optimize for performance with large datasets\n- Include proper indexing suggestions\n- Handle edge cases and NULL values\n- Use parameterized queries to prevent SQL injection\n\nTable schemas:\n{{schemas}}\n\nProvide:\n1. The SQL query\n2. Explanation of the approach\n3. Performance considerations', "Added performance considerations and SQL injection prevention", "Alice Chen", "2026-04-20T14:00:00Z"),
+      makeVersion("pv-3-4", "prompt-3", 4, 'You are a senior database engineer. Convert the following request into a {{dialect}} SQL query:\n\nRequest: {{request}}\n\nRequirements:\n- Use {{dialect}} syntax\n- Optimize for performance with large datasets\n- Include proper indexing suggestions\n- Handle edge cases and NULL values\n- Use parameterized queries to prevent SQL injection\n\nTable schemas:\n{{schemas}}\n\nProvide:\n1. The SQL query\n2. Explanation of the approach\n3. Performance considerations\n4. Alternative approaches if applicable', "Added alternative approaches section", "Alice Chen", "2026-06-10T11:00:00Z"),
+    ],
   },
   {
     id: "prompt-4",
@@ -73,6 +104,7 @@ export const mockPrompts: Prompt[] = [
     tags: ["content-writing", "technical-writing", "blog", "documentation"],
     variables: ["company", "topic", "audience", "tone", "points", "language"],
     version: 2,
+    status: "published",
     favorite: false,
     visibility: "organization",
     organizationId: "org-1",
@@ -80,6 +112,10 @@ export const mockPrompts: Prompt[] = [
     createdBy: "Carol Davis",
     createdAt: "2026-01-08T13:00:00Z",
     updatedAt: "2026-04-18T16:45:00Z",
+    versionHistory: [
+      makeVersion("pv-4-1", "prompt-4", 1, 'You are a technical writer for {{company}}. Write a blog post about {{topic}}.\n\nTarget audience: {{audience}}\nTone: {{tone}}\n\nStructure the post with:\n1. Engaging title\n2. Introduction\n3. Main body\n4. Conclusion', "Initial version", "Carol Davis", "2026-01-08T13:00:00Z"),
+      makeVersion("pv-4-2", "prompt-4", 2, 'You are a technical writer for {{company}}. Write a blog post about {{topic}}.\n\nTarget audience: {{audience}}\nTone: {{tone}}\nKey points to cover:\n{{points}}\n\nStructure the post with:\n1. Engaging title and subtitle\n2. Introduction hook\n3. Main body with clear sections\n4. Code examples where relevant\n5. Key takeaways\n6. Call to action\n\nStyle guidelines:\n- Use {{language}} for code examples\n- Keep paragraphs short and scannable\n- Include real-world analogies\n- End with a question to encourage comments', "Added key points, detailed structure, style guidelines, and language parameter", "Carol Davis", "2026-04-18T16:45:00Z"),
+    ],
   },
   {
     id: "prompt-5",
@@ -93,6 +129,7 @@ export const mockPrompts: Prompt[] = [
     tags: ["meetings", "productivity", "summarization", "action-items"],
     variables: ["company", "meetingTitle", "date", "attendees", "transcript", "tone", "audience"],
     version: 1,
+    status: "draft",
     favorite: false,
     visibility: "private",
     organizationId: "org-1",
@@ -100,6 +137,9 @@ export const mockPrompts: Prompt[] = [
     createdBy: "Alice Chen",
     createdAt: "2026-02-14T10:00:00Z",
     updatedAt: "2026-02-14T10:00:00Z",
+    versionHistory: [
+      makeVersion("pv-5-1", "prompt-5", 1, 'Summarize the following meeting transcript for {{company}}.\n\nMeeting: {{meetingTitle}}\nDate: {{date}}\nAttendees: {{attendees}}\n\nTranscript:\n{{transcript}}\n\nProvide:\n1. Executive summary (2-3 sentences)\n2. Key discussion points\n3. Decisions made\n4. Action items with owners\n5. Next steps and deadlines\n6. Risks or blockers identified\n\nFormat the action items as a table with columns: Action, Owner, Due Date.\nBe {{tone}} and focus on {{audience}}-relevant details.', "Initial version", "Alice Chen", "2026-02-14T10:00:00Z"),
+    ],
   },
   {
     id: "prompt-6",
@@ -113,6 +153,7 @@ export const mockPrompts: Prompt[] = [
     tags: ["api", "documentation", "openapi", "developer-experience"],
     variables: ["language", "endpoint", "method", "code", "format", "tone", "audience"],
     version: 3,
+    status: "published",
     favorite: true,
     visibility: "workspace",
     organizationId: "org-1",
@@ -120,6 +161,11 @@ export const mockPrompts: Prompt[] = [
     createdBy: "Bob Martinez",
     createdAt: "2025-12-01T15:00:00Z",
     updatedAt: "2026-06-01T08:30:00Z",
+    versionHistory: [
+      makeVersion("pv-6-1", "prompt-6", 1, 'Generate API documentation for the following {{language}} endpoint:\n\nEndpoint: {{endpoint}}\nMethod: {{method}}\nCode:\n```{{language}}\n{{code}}\n```\n\nGenerate documentation including:\n1. Endpoint description\n2. Request parameters\n3. Response format\n4. Error codes', "Initial version", "Bob Martinez", "2025-12-01T15:00:00Z"),
+      makeVersion("pv-6-2", "prompt-6", 2, 'Generate API documentation for the following {{language}} endpoint:\n\nEndpoint: {{endpoint}}\nMethod: {{method}}\nCode:\n```{{language}}\n{{code}}\n```\n\nGenerate documentation including:\n1. Endpoint description\n2. Request parameters (path, query, headers, body)\n3. Request examples\n4. Response format and examples\n5. Error codes and handling\n\nFormat as {{format}}.\nBe {{tone}} and write for {{audience}} developers.', "Added format, tone, audience params; expanded documentation sections", "Bob Martinez", "2026-03-15T09:00:00Z"),
+      makeVersion("pv-6-3", "prompt-6", 3, 'Generate API documentation for the following {{language}} endpoint:\n\nEndpoint: {{endpoint}}\nMethod: {{method}}\nCode:\n```{{language}}\n{{code}}\n```\n\nGenerate documentation including:\n1. Endpoint description\n2. Request parameters (path, query, headers, body)\n3. Request examples in multiple languages\n4. Response format and examples\n5. Error codes and handling\n6. Rate limiting information\n7. Authentication requirements\n\nFormat as {{format}} (OpenAPI 3.0, Markdown, or HTML).\nBe {{tone}} and write for {{audience}} developers.', "Added rate limiting, auth requirements, multi-language examples", "Bob Martinez", "2026-06-01T08:30:00Z"),
+    ],
   },
   {
     id: "prompt-7",
@@ -142,6 +188,7 @@ export const mockPrompts: Prompt[] = [
       "sentiment",
     ],
     version: 2,
+    status: "published",
     favorite: false,
     visibility: "organization",
     organizationId: "org-1",
@@ -149,6 +196,10 @@ export const mockPrompts: Prompt[] = [
     createdBy: "Carol Davis",
     createdAt: "2026-03-05T09:00:00Z",
     updatedAt: "2026-05-30T13:20:00Z",
+    versionHistory: [
+      makeVersion("pv-7-1", "prompt-7", 1, 'You are a customer support specialist at {{company}}. Respond to the following customer inquiry:\n\nCustomer: {{customerName}}\nIssue type: {{issueType}}\nPriority: {{priority}}\n\nMessage:\n{{message}}\n\nCompany context:\n{{companyContext}}\n\nCraft a response that:\n1. Acknowledges the issue with empathy\n2. Provides a clear solution or next steps\n3. Offers additional help if needed', "Initial version", "Carol Davis", "2026-03-05T09:00:00Z"),
+      makeVersion("pv-7-2", "prompt-7", 2, 'You are a customer support specialist at {{company}}. Respond to the following customer inquiry:\n\nCustomer: {{customerName}}\nIssue type: {{issueType}}\nPriority: {{priority}}\n\nMessage:\n{{message}}\n\nCompany context:\n{{companyContext}}\n\nCraft a response that:\n1. Acknowledges the issue with empathy\n2. Provides a clear solution or next steps\n3. Sets realistic expectations on resolution time\n4. Offers additional help if needed\n\nTone: {{tone}}\nThe customer has a {{sentiment}} sentiment.\n\nInclude relevant documentation links if applicable and ensure compliance with {{company}} support policies.', "Added tone, sentiment, resolution time expectations, compliance", "Carol Davis", "2026-05-30T13:20:00Z"),
+    ],
   },
   {
     id: "prompt-8",
@@ -162,6 +213,7 @@ export const mockPrompts: Prompt[] = [
     tags: ["release-notes", "changelog", "product-updates", "communication"],
     variables: ["productName", "version", "releaseDate", "audience", "changes", "tone"],
     version: 1,
+    status: "draft",
     favorite: false,
     visibility: "public",
     organizationId: "org-1",
@@ -169,5 +221,8 @@ export const mockPrompts: Prompt[] = [
     createdBy: "Carol Davis",
     createdAt: "2026-04-22T14:00:00Z",
     updatedAt: "2026-04-22T14:00:00Z",
+    versionHistory: [
+      makeVersion("pv-8-1", "prompt-8", 1, 'Generate release notes for {{productName}} version {{version}}.\n\nRelease date: {{releaseDate}}\nTarget audience: {{audience}}\n\nChanges:\n{{changes}}\n\nCategorize changes into:\n1. ✨ New Features\n2. 🐛 Bug Fixes\n3. ⚡ Performance Improvements\n4. 🔧 Maintenance & Refactoring\n5. 📚 Documentation\n6. ⚠️ Breaking Changes\n\nFor each change include:\n- A user-friendly description\n- The issue/PR number if available\n- Impact level (Low, Medium, High)\n\nWrite in a {{tone}} tone suitable for {{audience}}.\nInclude upgrade instructions if there are breaking changes.\nEnd with a thank-you note to contributors.', "Initial version", "Carol Davis", "2026-04-22T14:00:00Z"),
+    ],
   },
 ];

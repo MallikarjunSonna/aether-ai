@@ -1,4 +1,12 @@
-import type { Prompt, PromptCategory, CreatePromptRequest, UpdatePromptRequest } from "../../types/prompt";
+import type {
+  Prompt,
+  PromptCategory,
+  PromptVersion,
+  PromptTemplateValidation,
+  CreatePromptRequest,
+  UpdatePromptRequest,
+  CreateVersionRequest,
+} from "../../types/prompt";
 import { mockPrompts } from "../../mocks/prompts";
 
 function extractVariables(content: string): string[] {
@@ -27,6 +35,17 @@ class PromptService {
 
   createPrompt(request: CreatePromptRequest): Prompt {
     const now = new Date().toISOString();
+    const variables = extractVariables(request.content);
+    const versionEntry: PromptVersion = {
+      id: `pv-${Date.now()}`,
+      promptId: `prompt-${Date.now()}`,
+      version: 1,
+      content: request.content,
+      variables,
+      changelog: "Initial version",
+      createdBy: "Current User",
+      createdAt: now,
+    };
     const prompt: Prompt = {
       id: `prompt-${Date.now()}`,
       title: request.title,
@@ -35,8 +54,9 @@ class PromptService {
       content: request.content,
       category: request.category,
       tags: request.tags,
-      variables: extractVariables(request.content),
+      variables,
       version: 1,
+      status: "draft",
       favorite: false,
       visibility: request.visibility,
       organizationId: "org-1",
@@ -44,6 +64,7 @@ class PromptService {
       createdBy: "Current User",
       createdAt: now,
       updatedAt: now,
+      versionHistory: [versionEntry],
     };
     this.prompts.unshift(prompt);
     return prompt;
@@ -54,6 +75,24 @@ class PromptService {
     if (index === -1) return null;
 
     const existing = this.prompts[index];
+    const variables = extractVariables(request.content);
+    const now = new Date().toISOString();
+    const contentChanged = existing.content !== request.content;
+    const newVersion = contentChanged ? existing.version + 1 : existing.version;
+
+    const versionEntry: PromptVersion | null = contentChanged
+      ? {
+          id: `pv-${Date.now()}`,
+          promptId: id,
+          version: newVersion,
+          content: request.content,
+          variables,
+          changelog: `Updated via editor`,
+          createdBy: "Current User",
+          createdAt: now,
+        }
+      : null;
+
     const updated: Prompt = {
       ...existing,
       title: request.title,
@@ -62,12 +101,107 @@ class PromptService {
       content: request.content,
       category: request.category,
       tags: request.tags,
-      variables: extractVariables(request.content),
+      variables,
+      version: newVersion,
       visibility: request.visibility,
+      updatedAt: now,
+      versionHistory: versionEntry
+        ? [...existing.versionHistory, versionEntry]
+        : existing.versionHistory,
+    };
+    this.prompts[index] = updated;
+    return updated;
+  }
+
+  createVersion(id: string, request: CreateVersionRequest): Prompt | null {
+    const index = this.prompts.findIndex((p) => p.id === id);
+    if (index === -1) return null;
+
+    const prompt = this.prompts[index];
+    const variables = extractVariables(request.content);
+    const now = new Date().toISOString();
+    const versionEntry: PromptVersion = {
+      id: `pv-${Date.now()}`,
+      promptId: id,
+      version: prompt.version + 1,
+      content: request.content,
+      variables,
+      changelog: request.changelog,
+      createdBy: "Current User",
+      createdAt: now,
+    };
+
+    const updated: Prompt = {
+      ...prompt,
+      content: request.content,
+      variables,
+      version: prompt.version + 1,
+      updatedAt: now,
+      versionHistory: [...prompt.versionHistory, versionEntry],
+    };
+    this.prompts[index] = updated;
+    return updated;
+  }
+
+  publishPrompt(id: string): Prompt | null {
+    const index = this.prompts.findIndex((p) => p.id === id);
+    if (index === -1) return null;
+    const updated = {
+      ...this.prompts[index],
+      status: "published" as const,
       updatedAt: new Date().toISOString(),
     };
     this.prompts[index] = updated;
     return updated;
+  }
+
+  draftPrompt(id: string): Prompt | null {
+    const index = this.prompts.findIndex((p) => p.id === id);
+    if (index === -1) return null;
+    const updated = {
+      ...this.prompts[index],
+      status: "draft" as const,
+      updatedAt: new Date().toISOString(),
+    };
+    this.prompts[index] = updated;
+    return updated;
+  }
+
+  validateTemplate(content: string): PromptTemplateValidation {
+    const variables = extractVariables(content);
+    const errors: string[] = [];
+    const warnings: string[] = [];
+
+    if (content.trim().length === 0) {
+      errors.push("Template content is empty.");
+    }
+    if (content.length > 10000) {
+      warnings.push("Template content exceeds 10,000 characters. Consider splitting into smaller templates.");
+    }
+    if (variables.length === 0 && content.trim().length > 0) {
+      warnings.push("No template variables found. Add {{variable}} placeholders for dynamic content.");
+    }
+
+    return {
+      valid: errors.length === 0,
+      errors,
+      warnings,
+      variableCount: variables.length,
+      missingVariables: [],
+    };
+  }
+
+  previewTemplate(content: string, values: Record<string, string>): string {
+    let result = content;
+    for (const [key, value] of Object.entries(values)) {
+      result = result.replace(new RegExp(`\\{\\{${key}\\}\\}`, "g"), () => value);
+    }
+    return result;
+  }
+
+  getVersionHistory(id: string): PromptVersion[] {
+    const prompt = this.prompts.find((p) => p.id === id);
+    return prompt?.versionHistory ?? [];
   }
 
   deletePrompt(id: string): boolean {
@@ -124,8 +258,10 @@ class PromptService {
       slug: generateSlug(`${original.title} (Copy)`),
       favorite: false,
       version: 1,
+      status: "draft",
       createdAt: now,
       updatedAt: now,
+      versionHistory: [],
     };
     this.prompts.unshift(prompt);
     return prompt;
