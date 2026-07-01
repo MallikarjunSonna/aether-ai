@@ -16,7 +16,6 @@ Pipeline:
 
 import logging
 import time
-from dataclasses import dataclass
 
 from app.services.ai.gateway import AIGateway
 from app.services.ai.schemas import ChatMessage, ChatRequest
@@ -37,7 +36,6 @@ from app.services.rag.schemas import (
 logger = logging.getLogger(__name__)
 
 
-@dataclass
 class RagService:
     """Orchestrate the RAG pipeline.
 
@@ -46,10 +44,17 @@ class RagService:
     changing this class.
     """
 
-    retriever: Retriever
-    context_builder: ContextBuilder
-    prompt_builder: PromptBuilder
-    ai_gateway: AIGateway
+    def __init__(
+        self,
+        retriever: Retriever,
+        context_builder: ContextBuilder,
+        prompt_builder: PromptBuilder,
+        ai_gateway: AIGateway,
+    ) -> None:
+        self.retriever = retriever
+        self.context_builder = context_builder
+        self.prompt_builder = prompt_builder
+        self.ai_gateway = ai_gateway
 
     async def answer(self, request: RagRequest) -> RagResponse:
         """Run the full RAG pipeline and return a structured response.
