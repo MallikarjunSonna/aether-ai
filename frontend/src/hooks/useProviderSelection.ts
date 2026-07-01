@@ -32,29 +32,30 @@ export function useProviderSelection() {
 
   useEffect(() => {
     const service = getService();
-    const types = service.listProviders();
 
-    Promise.all(
-      types.map(async (type) => {
-        const name = service.getProviderName(type);
-        const [isHealthy, aimodels] = await Promise.all([
-          service.checkProviderHealth(type).catch(() => false),
-          service.getProviderModels(type).catch(() => [] as AIModel[]),
-        ]);
-        const supportsStreaming = aimodels.some((m) => m.supportsStreaming);
-        return {
-          type,
-          name,
-          supportsStreaming,
-          healthStatus: (isHealthy ? "healthy" : "unavailable") as "healthy" | "unavailable",
-        };
+    service.listProviders().then((types) =>
+      Promise.all(
+        types.map(async (type) => {
+          const [name, isHealthy, aimodels] = await Promise.all([
+            service.getProviderName(type),
+            service.checkProviderHealth(type).catch(() => false),
+            service.getProviderModels(type).catch(() => [] as AIModel[]),
+          ]);
+          const supportsStreaming = aimodels.some((m) => m.supportsStreaming);
+          return {
+            type,
+            name,
+            supportsStreaming,
+            healthStatus: (isHealthy ? "healthy" : "unavailable") as "healthy" | "unavailable",
+          };
+        }),
+      ).then((providerInfos) => {
+        setProviders(providerInfos);
+        if (providerInfos.length > 0) {
+          setCurrentProvider(providerInfos[0].type);
+        }
       }),
-    ).then((providerInfos) => {
-      setProviders(providerInfos);
-      if (providerInfos.length > 0) {
-        setCurrentProvider(providerInfos[0].type);
-      }
-    });
+    );
   }, [getService]);
 
   useEffect(() => {

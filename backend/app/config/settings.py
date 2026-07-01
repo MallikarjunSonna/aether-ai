@@ -19,6 +19,9 @@ class AppSettings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     CORS_ORIGINS: str = "http://localhost:5173"
 
+    OPENAI_API_KEY: str = ""
+    ANTHROPIC_API_KEY: str = ""
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

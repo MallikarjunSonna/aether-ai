@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { AIChatService } from "../services/ai/AIChatService";
+import { AIProviderError } from "../types/ai";
 import type { ProviderType } from "../types/ai";
-import { AIProviderError } from "../providers/OpenAIProvider";
 
 export interface ChatEntry {
   id: string;

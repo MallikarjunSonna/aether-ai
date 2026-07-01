@@ -1,3 +1,16 @@
+export type AIErrorCode = "invalid_api_key" | "rate_limited" | "network_error" | "unknown";
+
+export class AIProviderError extends Error {
+  constructor(
+    message: string,
+    public readonly code: AIErrorCode,
+    public readonly provider: ProviderType,
+  ) {
+    super(message);
+    this.name = "AIProviderError";
+  }
+}
+
 export type ProviderType =
   | "mock"
   | "openai"

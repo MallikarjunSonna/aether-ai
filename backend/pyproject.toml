@@ -5,8 +5,10 @@ description = "FastAPI backend foundation for Nexus AI"
 requires-python = ">=3.11"
 dependencies = [
   "alembic",
+  "anthropic",
   "asyncpg",
   "fastapi",
+  "openai",
   "passlib[bcrypt]",
   "pydantic-settings",
   "pwdlib[argon2]",
