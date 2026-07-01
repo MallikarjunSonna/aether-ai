@@ -2,7 +2,6 @@
 
 from datetime import datetime
 
-from app.database.types import UUIDType
 from app.models.base import BaseModel
 from sqlalchemy import DateTime, Float, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column

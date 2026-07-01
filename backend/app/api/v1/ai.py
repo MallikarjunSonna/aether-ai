@@ -8,7 +8,7 @@ import json
 import logging
 import time
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -78,7 +78,9 @@ async def list_providers() -> SuccessResponse[list[ProviderInfo]]:
                 models=models,
             )
         )
-    return SuccessResponse(data=provider_infos, message="Providers retrieved successfully.")
+    return SuccessResponse(
+        data=provider_infos, message="Providers retrieved successfully."
+    )
 
 
 @router.get("/models/{provider}", response_model=SuccessResponse[list[AIModel]])
@@ -103,16 +105,16 @@ async def chat(
     try:
         response = await gateway.generate(request)
     except AIAuthenticationError as exc:
-        raise _map_provider_error(exc)
+        raise _map_provider_error(exc) from exc
     except AIRateLimitError as exc:
-        raise _map_provider_error(exc)
+        raise _map_provider_error(exc) from exc
     except AINetworkError as exc:
-        raise _map_provider_error(exc)
+        raise _map_provider_error(exc) from exc
     except AIUnknownProviderError as exc:
-        raise _map_provider_error(exc)
+        raise _map_provider_error(exc) from exc
     except AIProviderError as exc:
         logger.exception("AI provider error during chat generation.")
-        raise _map_provider_error(exc)
+        raise _map_provider_error(exc) from exc
 
     elapsed_ms = (time.monotonic() - start) * 1000
     logger.info(
@@ -123,7 +125,9 @@ async def chat(
         response.usage.total_tokens,
     )
 
-    return SuccessResponse(data=response, message="Chat response generated successfully.")
+    return SuccessResponse(
+        data=response, message="Chat response generated successfully."
+    )
 
 
 @router.post("/chat/stream")

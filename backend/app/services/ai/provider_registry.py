@@ -18,7 +18,10 @@ class ProviderRegistry:
     def register(self, provider: AIProvider) -> None:
         """Register a provider implementation."""
         if provider.type in self._providers:
-            logger.warning("Provider '%s' is already registered and will be replaced.", provider.type)
+            logger.warning(
+                "Provider '%s' is already registered and will be replaced.",
+                provider.type,
+            )
         self._providers[provider.type] = provider
         logger.info("Registered AI provider: %s (%s)", provider.name, provider.type)
 

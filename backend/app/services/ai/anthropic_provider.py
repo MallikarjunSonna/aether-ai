@@ -12,8 +12,20 @@ from anthropic import (
 
 from app.config.settings import get_settings
 from app.services.ai.base_provider import AIProvider
-from app.services.ai.errors import AIAuthenticationError, AINetworkError, AIProviderError, AIRateLimitError
-from app.services.ai.schemas import AIModel, ChatRequest, ChatResponse, FinishReason, ProviderType, TokenUsage
+from app.services.ai.errors import (
+    AIAuthenticationError,
+    AINetworkError,
+    AIProviderError,
+    AIRateLimitError,
+)
+from app.services.ai.schemas import (
+    AIModel,
+    ChatRequest,
+    ChatResponse,
+    FinishReason,
+    ProviderType,
+    TokenUsage,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +44,8 @@ MODELS: list[AIModel] = [
         provider="anthropic",
         name="Claude Haiku 4.5",
         capabilities=["chat", "streaming"],
-        description="Fast and cost-effective for simple tasks and high-throughput use cases.",
+        description="Fast and cost-effective for simple tasks "
+        "and high-throughput use cases.",
         max_tokens=8192,
         supports_streaming=True,
     ),
@@ -94,7 +107,9 @@ class AnthropicProvider(AIProvider):
         )
 
     async def generate(self, request: ChatRequest) -> ChatResponse:
-        messages_dict = [{"role": m.role, "content": m.content} for m in request.messages]
+        messages_dict = [
+            {"role": m.role, "content": m.content} for m in request.messages
+        ]
         system_content, filtered_messages = _separate_system_messages(messages_dict)
 
         try:
@@ -118,15 +133,19 @@ class AnthropicProvider(AIProvider):
                 usage=TokenUsage(
                     prompt_tokens=response.usage.input_tokens,
                     completion_tokens=response.usage.output_tokens,
-                    total_tokens=response.usage.input_tokens + response.usage.output_tokens,
+                    total_tokens=(
+                        response.usage.input_tokens + response.usage.output_tokens
+                    ),
                 ),
                 finish_reason=_map_finish_reason(response.stop_reason),
             )
         except Exception as exc:
-            raise self._map_error(exc)
+            raise self._map_error(exc) from exc
 
     async def stream(self, request: ChatRequest):
-        messages_dict = [{"role": m.role, "content": m.content} for m in request.messages]
+        messages_dict = [
+            {"role": m.role, "content": m.content} for m in request.messages
+        ]
         system_content, filtered_messages = _separate_system_messages(messages_dict)
 
         try:
@@ -140,11 +159,12 @@ class AnthropicProvider(AIProvider):
             )
 
             async for event in stream:
-                if event.type == "content_block_delta" and event.delta.type == "text_delta":
+                if (event.type == "content_block_delta"
+                        and event.delta.type == "text_delta"):
                     yield event.delta.text, None
 
         except Exception as exc:
-            raise self._map_error(exc)
+            raise self._map_error(exc) from exc
 
     async def list_models(self) -> list[AIModel]:
         return MODELS

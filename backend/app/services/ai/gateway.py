@@ -4,7 +4,6 @@ import logging
 import time
 import uuid
 
-from app.services.ai.base_provider import AIProvider
 from app.services.ai.errors import AIProviderError
 from app.services.ai.model_registry import ModelRegistry
 from app.services.ai.provider_registry import ProviderRegistry
@@ -13,7 +12,6 @@ from app.services.ai.schemas import (
     ChatRequest,
     ChatResponse,
     ProviderType,
-    TokenUsage,
 )
 
 logger = logging.getLogger(__name__)
@@ -50,14 +48,14 @@ class AIGateway:
     async def stream(self, request: ChatRequest):
         """Send a chat request and yield streaming SSE-compatible chunks.
 
-        Each yield is a dict with keys: id, model, provider, content, usage, finish_reason.
-        The last chunk includes final usage data and finish_reason.
+        Each yield is a dict with keys: id, model, provider, content, usage,
+        finish_reason. The last chunk includes final usage data and
+        finish_reason.
         """
         provider = self._providers.get(request.provider)
         start = time.monotonic()
         stream_id = str(uuid.uuid4())
         full_content = ""
-        final_usage: TokenUsage | None = None
 
         try:
             async for content, finish_reason in provider.stream(request):
@@ -71,13 +69,6 @@ class AIGateway:
                     "usage": None,
                     "finish_reason": finish_reason,
                 }
-
-                if finish_reason:
-                    final_usage = TokenUsage(
-                        prompt_tokens=0,
-                        completion_tokens=0,
-                        total_tokens=0,
-                    )
 
             elapsed = time.monotonic() - start
             logger.info(
@@ -122,7 +113,10 @@ class AIGateway:
         """Initialize providers and register their models."""
         from app.services.ai.anthropic_provider import AnthropicProvider
         from app.services.ai.mock_provider import MockProvider
-        from app.services.ai.openai_provider import OpenAIProvider, MODELS as OPENAI_MODELS
+        from app.services.ai.openai_provider import (
+            OpenAIProvider,
+            MODELS as OPENAI_MODELS,
+        )
         from app.services.ai.anthropic_provider import MODELS as ANTHROPIC_MODELS
         from app.services.ai.mock_provider import MODELS as MOCK_MODELS
 

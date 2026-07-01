@@ -4,7 +4,13 @@ import asyncio
 import logging
 
 from app.services.ai.base_provider import AIProvider
-from app.services.ai.schemas import AIModel, ChatRequest, ChatResponse, ProviderType, TokenUsage
+from app.services.ai.schemas import (
+    AIModel,
+    ChatRequest,
+    ChatResponse,
+    ProviderType,
+    TokenUsage,
+)
 
 logger = logging.getLogger(__name__)
 

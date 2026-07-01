@@ -12,8 +12,20 @@ from openai import (
 
 from app.config.settings import get_settings
 from app.services.ai.base_provider import AIProvider
-from app.services.ai.errors import AIAuthenticationError, AINetworkError, AIProviderError, AIRateLimitError
-from app.services.ai.schemas import AIModel, ChatRequest, ChatResponse, FinishReason, ProviderType, TokenUsage
+from app.services.ai.errors import (
+    AIAuthenticationError,
+    AINetworkError,
+    AIProviderError,
+    AIRateLimitError,
+)
+from app.services.ai.schemas import (
+    AIModel,
+    ChatRequest,
+    ChatResponse,
+    FinishReason,
+    ProviderType,
+    TokenUsage,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +35,8 @@ MODELS: list[AIModel] = [
         provider="openai",
         name="GPT-4.1",
         capabilities=["chat", "streaming"],
-        description="OpenAI GPT-4.1 model for complex reasoning and instruction following.",
+        description="OpenAI GPT-4.1 model for complex reasoning "
+        "and instruction following.",
         max_tokens=32768,
         supports_streaming=True,
     ),
@@ -82,7 +95,9 @@ class OpenAIProvider(AIProvider):
         try:
             response = await self._client.chat.completions.create(
                 model=request.model,
-                messages=[{"role": m.role, "content": m.content} for m in request.messages],
+                messages=[
+                    {"role": m.role, "content": m.content} for m in request.messages
+                ],
                 temperature=request.temperature,
                 max_tokens=request.max_tokens,
                 top_p=request.top_p,
@@ -101,19 +116,23 @@ class OpenAIProvider(AIProvider):
                 message={"role": "assistant", "content": content},
                 usage=TokenUsage(
                     prompt_tokens=response.usage.prompt_tokens if response.usage else 0,
-                    completion_tokens=response.usage.completion_tokens if response.usage else 0,
+                    completion_tokens=(
+                        response.usage.completion_tokens if response.usage else 0
+                    ),
                     total_tokens=response.usage.total_tokens if response.usage else 0,
                 ),
                 finish_reason=_map_finish_reason(choice.finish_reason),
             )
         except Exception as exc:
-            raise self._map_error(exc)
+            raise self._map_error(exc) from exc
 
     async def stream(self, request: ChatRequest):
         try:
             stream = await self._client.chat.completions.create(
                 model=request.model,
-                messages=[{"role": m.role, "content": m.content} for m in request.messages],
+                messages=[
+                    {"role": m.role, "content": m.content} for m in request.messages
+                ],
                 temperature=request.temperature,
                 max_tokens=request.max_tokens,
                 top_p=request.top_p,
@@ -129,12 +148,16 @@ class OpenAIProvider(AIProvider):
                     continue
 
                 content = choice.delta.content or ""
-                finish_reason = _map_finish_reason(choice.finish_reason) if choice.finish_reason else None
+                finish_reason = (
+                    _map_finish_reason(choice.finish_reason)
+                    if choice.finish_reason
+                    else None
+                )
 
                 yield content, finish_reason
 
         except Exception as exc:
-            raise self._map_error(exc)
+            raise self._map_error(exc) from exc
 
     async def list_models(self) -> list[AIModel]:
         return MODELS
