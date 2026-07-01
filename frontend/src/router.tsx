@@ -1,11 +1,11 @@
 import {
   BarChart3,
-  Bot,
   FolderKanban,
   Settings,
 } from "lucide-react";
 import { createBrowserRouter } from "react-router-dom";
 
+import { AgentRuntimePage } from "./pages/agents/AgentRuntimePage";
 import { AuthLayout } from "./layouts/AuthLayout";
 import { DashboardLayout } from "./layouts/DashboardLayout";
 import { RootLayout } from "./layouts/RootLayout";
@@ -44,7 +44,7 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <DashboardHome /> },
           { path: "chat", element: <AIChatPage /> },
-          { path: "agents", element: <PlaceholderPage title="AI Agents" icon={Bot} /> },
+          { path: "agents", element: <AgentRuntimePage /> },
           { path: "prompts", element: <PromptLibraryPage /> },
           { path: "knowledge", element: <KnowledgeHubPage /> },
           { path: "documents", element: <RAGExplorerPage /> },
