@@ -12,30 +12,102 @@ from app.services.rag.schemas import RetrievalQuery, RetrievalResponse, Retrieva
 logger = logging.getLogger(__name__)
 
 MOCK_KNOWLEDGE_ITEMS: list[dict] = [
-    {"id": "know-001", "title": "API Design Guidelines", "content": "All REST APIs must use semantic versioning, paginate list responses, and return standardized error envelopes. Rate limits are enforced per organization."},
-    {"id": "know-002", "title": "Database Schema Overview", "content": "The primary database uses PostgreSQL with SQLAlchemy 2.0 async sessions. All tables use UUID primary keys with automatic timestamps and soft delete support."},
-    {"id": "know-003", "title": "Authentication Flow", "content": "Authentication uses JWT access and refresh tokens. Access tokens expire after 15 minutes. Refresh tokens expire after 7 days. Passwords are hashed with Argon2 via pwdlib."},
-    {"id": "know-004", "title": "Deployment Architecture", "content": "The application is deployed as Docker containers orchestrated by Kubernetes. The frontend is served as a static SPA behind a CDN. The backend runs as a FastAPI application with async workers."},
-    {"id": "know-005", "title": "Monitoring and Observability", "content": "All services emit structured JSON logs. Metrics are collected via OpenTelemetry and sent to the observability stack. Alerts are configured for error rate spikes and latency degradation."},
-    {"id": "know-006", "title": "Workspace Memory Retention", "content": "Workspace memory retains conversation summaries for 90 days. Each summary is compressed using a configurable strategy. Memory items are associated with specific workspaces and users."},
-    {"id": "know-007", "title": "Prompt Template System", "content": "Prompt templates support variable interpolation, versioning, and categorization. Templates are stored as YAML files in the prompts directory and loaded at application startup."},
-    {"id": "know-008", "title": "Security Best Practices", "content": "All API endpoints require authentication except the health check. CORS is configured per environment. API keys are stored in environment variables, never in the codebase or database."},
+    {
+        "id": "know-001",
+        "title": "API Design Guidelines",
+        "content": "All REST APIs must use semantic versioning and paginate list responses.",  # noqa: E501
+    },
+    {
+        "id": "know-002",
+        "title": "Database Schema Overview",
+        "content": "The primary database uses PostgreSQL with SQLAlchemy 2.0 async sessions. All tables use UUID primary keys with soft delete.",  # noqa: E501
+    },
+    {
+        "id": "know-003",
+        "title": "Authentication Flow",
+        "content": "Authentication uses JWT access and refresh tokens. Access tokens expire after 15 minutes. Refresh tokens after 7 days.",  # noqa: E501
+    },
+    {
+        "id": "know-004",
+        "title": "Deployment Architecture",
+        "content": "The application is deployed in Docker containers orchestrated by Kubernetes. The frontend is a static SPA behind a CDN.",  # noqa: E501
+    },
+    {
+        "id": "know-005",
+        "title": "Monitoring and Observability",
+        "content": "All services emit structured JSON logs. Metrics are collected via OpenTelemetry. Alerts fire on error rate spikes and latency degradation.",  # noqa: E501
+    },
+    {
+        "id": "know-006",
+        "title": "Workspace Memory Retention",
+        "content": "Workspace memory retains conversation summaries for 90 days. Each summary is compressed. Items are tied to workspaces and users.",  # noqa: E501
+    },
+    {
+        "id": "know-007",
+        "title": "Prompt Template System",
+        "content": "Prompt templates support variable interpolation, versioning, and categorization. Templates are stored as YAML files and loaded at startup.",  # noqa: E501
+    },
+    {
+        "id": "know-008",
+        "title": "Security Best Practices",
+        "content": "All API endpoints require authentication except health check. CORS is per environment. API keys are in environment variables, never in code.",  # noqa: E501
+    },
 ]
 
 MOCK_MEMORY_ITEMS: list[dict] = [
-    {"id": "mem-001", "title": "User prefers concise responses", "content": "Users across the platform consistently prefer concise, bullet-point responses over verbose paragraphs. The AI should prioritize clarity and brevity."},
-    {"id": "mem-002", "title": "Common customer question: API keys", "content": "Customers frequently ask how to rotate API keys without downtime. The standard recommendation is to use the key rotation endpoint and update client configurations during off-peak hours."},
-    {"id": "mem-003", "title": "Team decision: TypeScript strict mode", "content": "The frontend team decided to enable TypeScript strict mode across all new features. Existing code is being migrated incrementally. No exceptions without team lead approval."},
-    {"id": "mem-004", "title": "Performance requirement: P95 < 200ms", "content": "The platform has a P95 latency requirement of under 200 milliseconds for all API endpoints excluding AI generation. This is enforced through automated performance regression tests."},
-    {"id": "mem-005", "title": "Deployment schedule: Wednesday window", "content": "Production deployments are scheduled for Wednesdays between 2 PM and 4 PM UTC. Emergency hotfixes bypass this window but require immediate post-deployment monitoring."},
+    {
+        "id": "mem-001",
+        "title": "User prefers concise responses",
+        "content": "Users prefer concise, bullet-point responses. The AI should prioritize clarity and brevity over verbosity.",  # noqa: E501
+    },
+    {
+        "id": "mem-002",
+        "title": "Common customer question: API keys",
+        "content": "Customers ask how to rotate API keys without downtime. Use the key rotation endpoint during off-peak hours.",  # noqa: E501
+    },
+    {
+        "id": "mem-003",
+        "title": "Team decision: TypeScript strict mode",
+        "content": "The frontend team enables TypeScript strict mode on all new features. Existing code migrates incrementally.",  # noqa: E501
+    },
+    {
+        "id": "mem-004",
+        "title": "Performance requirement: P95 < 200ms",
+        "content": "P95 latency must be under 200ms for all API endpoints excluding AI generation. Enforced via automated regression tests.",  # noqa: E501
+    },
+    {
+        "id": "mem-005",
+        "title": "Deployment schedule: Wednesday window",
+        "content": "Production deploys are Wednesdays 2-4 PM UTC. Hotfixes bypass this window but require immediate post-deploy monitoring.",  # noqa: E501
+    },
 ]
 
 MOCK_PROMPT_ITEMS: list[dict] = [
-    {"id": "prm-001", "title": "Code Review Assistant", "content": "You are a senior code reviewer. Analyze the provided code diff for bugs, security vulnerabilities, style issues, and performance problems. Provide specific line-level feedback."},
-    {"id": "prm-002", "title": "Documentation Generator", "content": "You are a technical writer. Generate comprehensive documentation for the provided code or API specification. Include descriptions, type information, usage examples, and edge cases."},
-    {"id": "prm-003", "title": "Architecture Advisor", "content": "You are a software architect. Evaluate the proposed architecture against the project's constraints, scalability requirements, and technology stack. Identify risks and suggest alternatives."},
-    {"id": "prm-004", "title": "Database Query Optimizer", "content": "You are a database specialist. Analyze the provided SQL query and schema for performance optimization opportunities. Suggest index additions, query rewrites, and schema adjustments."},
-    {"id": "prm-005", "title": "Security Auditor", "content": "You are a security engineer. Review the provided code or configuration for security vulnerabilities following OWASP guidelines. Classify findings by severity and propose fixes."},
+    {
+        "id": "prm-001",
+        "title": "Code Review Assistant",
+        "content": "You are a senior code reviewer. Analyze the code diff for bugs, vulnerabilities, style issues, and performance problems.",  # noqa: E501
+    },
+    {
+        "id": "prm-002",
+        "title": "Documentation Generator",
+        "content": "You are a technical writer. Generate documentation for the provided code or API spec with examples and edge cases.",  # noqa: E501
+    },
+    {
+        "id": "prm-003",
+        "title": "Architecture Advisor",
+        "content": "You are a software architect. Evaluate the architecture against constraints, scalability needs, and technology stack.",  # noqa: E501
+    },
+    {
+        "id": "prm-004",
+        "title": "Database Query Optimizer",
+        "content": "You are a database specialist. Analyze SQL queries for performance optimization opportunities and suggest improvements.",  # noqa: E501
+    },
+    {
+        "id": "prm-005",
+        "title": "Security Auditor",
+        "content": "You are a security engineer. Review code for OWASP vulnerabilities, classify by severity, and propose fixes.",  # noqa: E501
+    },
 ]
 
 
@@ -50,7 +122,9 @@ def _keyword_match(text: str, query: str) -> float:
     return matches / len(words) if matches > 0 else 0
 
 
-def _mock_retrieval(items: list[dict], query: RetrievalQuery, source_type: str) -> list[RetrievalResult]:
+def _mock_retrieval(
+    items: list[dict], query: RetrievalQuery, source_type: str
+) -> list[RetrievalResult]:
     """Rank items by keyword match and return scored results."""
     scored: list[tuple[float, dict]] = []
     for item in items:
@@ -61,7 +135,7 @@ def _mock_retrieval(items: list[dict], query: RetrievalQuery, source_type: str) 
     scored.sort(key=lambda x: x[0], reverse=True)
 
     results: list[RetrievalResult] = []
-    for score, item in scored[:query.max_results]:
+    for score, item in scored[: query.max_results]:
         results.append(
             RetrievalResult(
                 content=item["content"],
@@ -106,7 +180,9 @@ class MockRetriever(Retriever):
 
             if query.source_types:
                 source_handlers = [
-                    (st, items) for st, items in source_handlers if st in query.source_types
+                    (st, items)
+                    for st, items in source_handlers
+                    if st in query.source_types
                 ]
 
             all_results: list[RetrievalResult] = []
@@ -118,7 +194,9 @@ class MockRetriever(Retriever):
             top_results = all_results[: query.max_results]
 
             elapsed = (time.monotonic() - start) * 1000
-            logger.info("MockRetriever found %d results in %.1fms", len(top_results), elapsed)
+            logger.info(
+                "MockRetriever found %d results in %.1fms", len(top_results), elapsed
+            )
 
             return RetrievalResponse(
                 results=top_results,

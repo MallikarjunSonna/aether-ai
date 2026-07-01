@@ -1,4 +1,4 @@
-"""Context builder — merges retrieved results from all sources into a unified context."""
+"""Merge retrieved results from all sources into a unified context."""
 
 import logging
 import time
@@ -58,10 +58,14 @@ class ContextBuilder:
             all_items = deduped_knowledge + deduped_memory + deduped_prompt
             combined_lines: list[str] = []
             for item in all_items:
-                combined_lines.append(f"[{item.source_type.upper()}] {item.title}\n{item.content}")
+                combined_lines.append(
+                    f"[{item.source_type.upper()}] {item.title}\n{item.content}"
+                )
 
             elapsed = (time.monotonic() - start) * 1000
-            logger.info("ContextBuilder merged %d sources in %.1fms", len(all_items), elapsed)
+            logger.info(
+                "ContextBuilder merged %d sources in %.1fms", len(all_items), elapsed
+            )
 
             return MergedContext(
                 knowledge_items=deduped_knowledge,

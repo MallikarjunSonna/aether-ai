@@ -5,7 +5,7 @@ import pytest
 from app.services.ai.gateway import build_gateway
 from app.services.rag.base_retriever import Retriever
 from app.services.rag.context_builder import ContextBuilder
-from app.services.rag.errors import ContextBuildError, PromptBuildError, RetrievalError
+from app.services.rag.errors import PromptBuildError, RetrievalError
 from app.services.rag.mock_retriever import MockRetriever
 from app.services.rag.prompt_builder import PromptBuilder
 from app.services.rag.rag_service import RagService
@@ -159,7 +159,9 @@ class TestPromptBuilder:
             total_sources=1,
         )
 
-        prompt = builder.assemble(context=context, question="What are the API guidelines?")
+        prompt = builder.assemble(
+            context=context, question="What are the API guidelines?"
+        )
 
         assert isinstance(prompt, PromptAssembly)
         assert prompt.system_prompt
@@ -276,7 +278,9 @@ class TestRagServiceE2E:
             ai_gateway=gateway,
         )
 
-        request = RagRequest(query="deployment architecture", provider="mock", model="mock-chat")
+        request = RagRequest(
+            query="deployment architecture", provider="mock", model="mock-chat"
+        )
 
         response = await service.answer(request)
 
@@ -292,7 +296,9 @@ class TestRagServiceE2E:
 
         class EmptyRetriever(Retriever):
             async def retrieve(self, query: RetrievalQuery) -> RetrievalResponse:
-                return RetrievalResponse(results=[], total_found=0, retrieval_latency_ms=0)
+                return RetrievalResponse(
+                    results=[], total_found=0, retrieval_latency_ms=0
+                )
 
         service = RagService(
             retriever=EmptyRetriever(),

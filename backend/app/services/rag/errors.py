@@ -30,7 +30,11 @@ class RetrievalError(RagError):
         super().__init__(
             message=message,
             code="retrieval_error",
-            details={**(details or {}), "source_type": source_type} if source_type else details,
+            details=(
+                {**(details or {}), "source_type": source_type}
+                if source_type
+                else details
+            ),
         )
 
 

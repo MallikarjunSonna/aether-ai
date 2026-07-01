@@ -131,7 +131,8 @@ class RagService:
             total_latency = (time.monotonic() - pipeline_start) * 1000
 
             logger.info(
-                "RAG pipeline complete | retrieval=%.1fms context=%.1fms prompt=%.1fms gen=%.1fms total=%.1fms",
+                "RAG pipeline complete | retrieval=%.1fms context=%.1fms "
+                "prompt=%.1fms gen=%.1fms total=%.1fms",
                 retrieval_latency,
                 context_latency,
                 prompt_latency,
@@ -153,9 +154,11 @@ class RagService:
                     total_tokens_used=chat_response.usage.total_tokens,
                     sources_retrieved=retrieval_response.total_found,
                     sources_after_reranking=merged_context.total_sources,
-                    embedding_model=retrieval_response.results[0].embedding_model
-                    if retrieval_response.results
-                    else None,
+                    embedding_model=(
+                        retrieval_response.results[0].embedding_model
+                        if retrieval_response.results
+                        else None
+                    ),
                 ),
             )
 
@@ -172,7 +175,9 @@ class RagService:
         synchronously, then streams the AI generation response.
         Each yielded chunk includes citation metadata on the final chunk.
         """
-        logger.info("RAGService starting streaming pipeline for query: %s", request.query[:60])
+        logger.info(
+            "RAGService starting streaming pipeline for query: %s", request.query[:60]
+        )
 
         try:
             retrieval_query = RetrievalQuery(
@@ -183,9 +188,15 @@ class RagService:
             )
             retrieval_response = await self.retriever.retrieve(retrieval_query)
 
-            knowledge_results = [r for r in retrieval_response.results if r.source_type == "knowledge"]
-            memory_results = [r for r in retrieval_response.results if r.source_type == "memory"]
-            prompt_results = [r for r in retrieval_response.results if r.source_type == "prompt"]
+            knowledge_results = [
+                r for r in retrieval_response.results if r.source_type == "knowledge"
+            ]
+            memory_results = [
+                r for r in retrieval_response.results if r.source_type == "memory"
+            ]
+            prompt_results = [
+                r for r in retrieval_response.results if r.source_type == "prompt"
+            ]
 
             merged_context = self.context_builder.build(
                 knowledge_results=knowledge_results,
@@ -213,7 +224,11 @@ class RagService:
             citations = self._build_citations(merged_context)
 
             async for chunk in self.ai_gateway.stream(chat_request):
-                chunk["citations"] = [c.model_dump() for c in citations] if chunk.get("finish_reason") else None
+                chunk["citations"] = (
+                    [c.model_dump() for c in citations]
+                    if chunk.get("finish_reason")
+                    else None
+                )
                 yield chunk
 
         except RagError:
@@ -225,7 +240,9 @@ class RagService:
     def _build_citations(self, context: MergedContext) -> list[Citation]:
         """Build citation list from merged context items."""
         citations: list[Citation] = []
-        all_items = context.knowledge_items + context.memory_items + context.prompt_items
+        all_items = (
+            context.knowledge_items + context.memory_items + context.prompt_items
+        )
         for item in all_items:
             citations.append(
                 Citation(
