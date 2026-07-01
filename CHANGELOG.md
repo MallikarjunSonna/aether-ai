@@ -12,10 +12,42 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Conversation persistence
 - Markdown rendering and code highlighting
-- RAG (Retrieval-Augmented Generation) pipeline
-- AI Agents
 - Provider plugins
 - Real-time collaboration
+- Backend AI Gateway migration
+
+---
+
+## [0.4.0] — Enterprise Prompt Templates, AI Ops Center & Agent Runtime — 2026-07-02
+
+### Added
+
+#### Enterprise Prompt Templates (Ticket 45)
+
+- Prompt template types: `PromptTemplateStatus`, `PromptVersion`, `PromptTemplateValidation`, `RagCompatibility`
+- Version management with draft/publish workflow and status history
+- Template validation engine with rule-based and compatibility checking
+- Live template preview rendering
+- Components: `TemplateVersionHistory`, `TemplatePublishControls`, `TemplatePreview`, `TemplateValidationBadge`
+- `PromptCard` and `PromptEditor` updated with status indicators and version picker
+- `PromptService` with version management, validation, and preview methods
+- `usePrompts` hook with template operations
+
+#### AI Operations Center (Ticket 46)
+
+- Ops dashboard types: `OpsDashboardData`, `ProviderHealth`, `RequestMetric`, `TokenUsage`, `RagMetric`, `ProviderComparison`
+- Mock dashboard data with realistic provider health, request volume, and token usage metrics
+- Components: `OpsMetricCard`, `ProviderHealthCard`, `RequestMetricsCard`, `TokenUsageCard`, `RagMetricsCard`
+- Dedicated page at `/dashboard/ops` with real-time health monitoring
+- Sidebar navigation entry for Ops Center
+
+#### Agent Runtime (Ticket 47)
+
+- Agent types: `AgentConfig`, `AgentPlan`, `PlanStep`, `MemoryEntry`, `ToolDefinition`, `ExecutionTrace`
+- Mock agents with diverse specializations, memory entries, tool registries, and execution traces
+- Components: `AgentCard`, `AgentPlanViewer`, `AgentMemoryPanel`, `AgentToolRegistry`, `AgentExecutionViewer`
+- Dedicated page at `/dashboard/agents` replacing placeholder
+- Router updated with agent runtime route
 
 ---
 
@@ -86,7 +118,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Docker setup with `docker-compose.yml` for local development
 - Initial CI configuration with linting, type checking, and test execution
 
-[Unreleased]: https://github.com/MallikarjunSonna/aether-ai/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/MallikarjunSonna/aether-ai/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/MallikarjunSonna/aether-ai/releases/tag/v0.4.0
 [0.3.0]: https://github.com/MallikarjunSonna/aether-ai/releases/tag/v0.3.0
 [0.2.0]: https://github.com/MallikarjunSonna/aether-ai/releases/tag/v0.2.0
 [0.1.0]: https://github.com/MallikarjunSonna/aether-ai/releases/tag/v0.1.0

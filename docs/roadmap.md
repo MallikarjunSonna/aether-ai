@@ -80,6 +80,31 @@
 - Request timing middleware.
 - Error and audit event correlation.
 
+## Sprint 10 — Completed (v0.4.0)
+
+### Enterprise Prompt Templates
+
+- Prompt template types with status, version, validation, and RAG compatibility.
+- Version management with draft/publish workflow and version history.
+- Template validation engine with rule-based validation.
+- Live template preview functionality.
+- UI components: `TemplateVersionHistory`, `TemplatePublishControls`, `TemplatePreview`, `TemplateValidationBadge`.
+- `PromptService` with version management, validation, and preview methods.
+
+### AI Operations Center
+
+- Ops dashboard types for provider health, request metrics, token usage, and RAG metrics.
+- Mock ops data with realistic health and usage metrics.
+- Dashboard components: `OpsMetricCard`, `ProviderHealthCard`, `RequestMetricsCard`, `TokenUsageCard`, `RagMetricsCard`.
+- Dedicated `/dashboard/ops` page with sidebar navigation.
+
+### Agent Runtime
+
+- Agent types for configuration, planning, memory, tools, and execution traces.
+- Mock agents with specializations, memory, tool registries, and traces.
+- Agent UI components: `AgentCard`, `AgentPlanViewer`, `AgentMemoryPanel`, `AgentToolRegistry`, `AgentExecutionViewer`.
+- Dedicated `/dashboard/agents` page replacing the placeholder.
+
 ## Future Enterprise Features
 
 ### Multi-Tenant Administration
@@ -96,13 +121,13 @@
 - Admin activity exports.
 - Policy-based access controls.
 
-### AI Platform Capabilities
+### Backend AI Platform
 
-- AI Gateway for provider routing and policy enforcement.
-- Agent orchestration package implementation.
-- RAG ingestion and retrieval workflows.
-- Prompt templates, prompt versioning, and prompt governance.
-- Usage metering and quota enforcement.
+- Backend AI Gateway migration (provider SDKs from frontend to backend).
+- AI provider backend implementations (OpenAI, Anthropic).
+- API key management and secrets handling.
+- Usage tracking and rate limiting infrastructure.
+- Audit logging for AI requests.
 
 ### Enterprise Operations
 
