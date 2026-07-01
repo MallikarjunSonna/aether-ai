@@ -13,6 +13,7 @@ import { AIChatPage } from "./pages/chat/AIChatPage";
 import { DashboardHome } from "./pages/DashboardHome";
 import { DashboardPage } from "./pages/DashboardPage";
 import { KnowledgeHubPage } from "./pages/knowledge/KnowledgeHubPage";
+import { OpsCenterPage } from "./pages/ops/OpsCenterPage";
 import { OrganizationsPage } from "./pages/organizations/OrganizationsPage";
 import { PlaceholderPage } from "./pages/placeholder/PlaceholderPage";
 import { PromptLibraryPage } from "./pages/prompts/PromptLibraryPage";
@@ -47,6 +48,7 @@ export const router = createBrowserRouter([
           { path: "prompts", element: <PromptLibraryPage /> },
           { path: "knowledge", element: <KnowledgeHubPage /> },
           { path: "documents", element: <RAGExplorerPage /> },
+          { path: "ops", element: <OpsCenterPage /> },
           { path: "projects", element: <PlaceholderPage title="Projects" icon={FolderKanban} /> },
           { path: "organizations", element: <OrganizationsPage /> },
           { path: "workspaces", element: <WorkspacesPage /> },

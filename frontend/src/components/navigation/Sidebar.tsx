@@ -1,4 +1,5 @@
 import {
+  Activity,
   BarChart3,
   Bot,
   BrainCircuit,
@@ -28,6 +29,7 @@ const navItems: NavItem[] = [
   { label: "Prompt Library", icon: FileText, href: "/dashboard/prompts" },
   { label: "Workspace Memory", icon: BrainCircuit, href: "/dashboard/knowledge" },
   { label: "Documents", icon: File, href: "/dashboard/documents" },
+  { label: "AI Ops", icon: Activity, href: "/dashboard/ops" },
   { label: "Projects", icon: FolderKanban, href: "/dashboard/projects" },
   { label: "Workspaces", icon: Layers, href: "/dashboard/workspaces" },
   { label: "Organization", icon: Building2, href: "/dashboard/organizations" },
