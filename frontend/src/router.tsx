@@ -1,7 +1,6 @@
 import {
   BarChart3,
   Bot,
-  File,
   FolderKanban,
   Settings,
 } from "lucide-react";
@@ -17,6 +16,7 @@ import { KnowledgeHubPage } from "./pages/knowledge/KnowledgeHubPage";
 import { OrganizationsPage } from "./pages/organizations/OrganizationsPage";
 import { PlaceholderPage } from "./pages/placeholder/PlaceholderPage";
 import { PromptLibraryPage } from "./pages/prompts/PromptLibraryPage";
+import { RAGExplorerPage } from "./pages/rag/RAGExplorerPage";
 import { WorkspacesPage } from "./pages/workspaces/WorkspacesPage";
 import { ForgotPasswordPage } from "./pages/auth/ForgotPasswordPage";
 import { LoginPage } from "./pages/auth/LoginPage";
@@ -46,7 +46,7 @@ export const router = createBrowserRouter([
           { path: "agents", element: <PlaceholderPage title="AI Agents" icon={Bot} /> },
           { path: "prompts", element: <PromptLibraryPage /> },
           { path: "knowledge", element: <KnowledgeHubPage /> },
-          { path: "documents", element: <PlaceholderPage title="Documents" icon={File} /> },
+          { path: "documents", element: <RAGExplorerPage /> },
           { path: "projects", element: <PlaceholderPage title="Projects" icon={FolderKanban} /> },
           { path: "organizations", element: <OrganizationsPage /> },
           { path: "workspaces", element: <WorkspacesPage /> },

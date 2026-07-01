@@ -11,7 +11,7 @@ interface ContextItem {
 }
 
 interface RetrievedContextPanelProps {
-  items: ContextItem[];
+  items?: ContextItem[];
 }
 
 const MOCK_ITEMS: ContextItem[] = [
