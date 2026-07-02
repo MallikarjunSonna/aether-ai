@@ -72,7 +72,8 @@ class ConnectorNetworkError(ConnectorError):
 
     def __init__(
         self,
-        message: str = "Unable to reach the external service. Check your network connection.",
+        message: str = "Unable to reach the external service. "
+        "Check your network connection.",
         connector: ConnectorType | None = None,
     ) -> None:
         super().__init__(

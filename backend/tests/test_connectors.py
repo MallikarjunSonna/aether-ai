@@ -107,9 +107,22 @@ class TestMockConnector:
 
     @pytest.mark.parametrize(
         "provider",
-        ["github", "notion", "confluence", "google_drive", "sharepoint", "slack", "jira", "linear", "custom"],
+        [
+            "github",
+            "notion",
+            "confluence",
+            "google_drive",
+            "sharepoint",
+            "slack",
+            "jira",
+            "linear",
+            "custom",
+        ],
     )
-    async def test_all_providers_have_unique_metadata(self, provider: ConnectorType) -> None:
+    async def test_all_providers_have_unique_metadata(
+        self,
+        provider: ConnectorType,
+    ) -> None:
         c = MockConnector(provider)
         meta = await c.metadata()
         assert meta.provider == provider
@@ -118,9 +131,22 @@ class TestMockConnector:
 
     @pytest.mark.parametrize(
         "provider",
-        ["github", "notion", "confluence", "google_drive", "sharepoint", "slack", "jira", "linear", "custom"],
+        [
+            "github",
+            "notion",
+            "confluence",
+            "google_drive",
+            "sharepoint",
+            "slack",
+            "jira",
+            "linear",
+            "custom",
+        ],
     )
-    async def test_all_providers_return_deterministic_mock_data(self, provider: ConnectorType) -> None:
+    async def test_all_providers_return_deterministic_mock_data(
+        self,
+        provider: ConnectorType,
+    ) -> None:
         c = MockConnector(provider)
         m1 = await c.metadata()
         m2 = await c.metadata()
@@ -159,16 +185,16 @@ class TestMockConnector:
         result = await c.sync()
         assert isinstance(result, SyncResult)
         assert result.success is True
-        assert result.itemsSynced == 42
+        assert result.items_synced == 42
 
     async def test_metadata_shape(self) -> None:
         c = MockConnector("slack")
         meta = await c.metadata()
         assert isinstance(meta, ConnectorMetadata)
         assert isinstance(meta.health, ConnectorHealth)
-        assert isinstance(meta.futureCapabilities, FutureCapabilities)
-        assert meta.futureCapabilities.supportsOAuth is True
-        assert meta.futureCapabilities.supportsWebhooks is True
+        assert isinstance(meta.future_capabilities, FutureCapabilities)
+        assert meta.future_capabilities.supports_oauth is True
+        assert meta.future_capabilities.supports_webhooks is True
 
 
 class TestConnectorErrors:

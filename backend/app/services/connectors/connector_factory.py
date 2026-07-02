@@ -55,7 +55,7 @@ class ConnectorFactory:
         try:
             return self._registry.get(connector_type)
         except ConnectorNotFoundError:
-            raise ConnectorNotFoundError(connector_type)
+            raise ConnectorNotFoundError(connector_type) from None
 
     def list_available(self) -> list[ConnectorType]:
         """Return all registered connector types."""

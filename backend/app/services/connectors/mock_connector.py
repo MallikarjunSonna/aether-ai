@@ -3,7 +3,7 @@
 Used for development and testing until real provider implementations exist.
 """
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from app.services.connectors.base_connector import BaseConnector
 from app.services.connectors.schemas import (
@@ -14,13 +14,12 @@ from app.services.connectors.schemas import (
     ConnectorType,
     FutureCapabilities,
     SourceItem,
-    SyncFrequency,
     SyncResult,
 )
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 MOCK_AUTH_MAP: dict[ConnectorType, AuthenticationMethod] = {
@@ -90,29 +89,30 @@ class MockConnector(BaseConnector):
         return ConnectorHealth(
             status="healthy",
             latency=42,
-            lastChecked=_utcnow(),
+            last_checked=_utcnow(),
             message=f"{self.name} is reachable.",
         )
 
     async def list_sources(self) -> list[SourceItem]:
+        source_types = MOCK_SOURCE_TYPES.get(self._type, ["source"])
         return [
             SourceItem(
                 id=f"{self._type}-src-{i}",
                 name=f"{self.name} Source {i}",
                 type=st,
                 path=f"/{self._type}/{st}/{i}",
-                lastModified=_utcnow(),
+                last_modified=_utcnow(),
                 size=1024 * i,
             )
-            for i, st in enumerate(MOCK_SOURCE_TYPES.get(self._type, ["source"]), start=1)
+            for i, st in enumerate(source_types, start=1)
         ]
 
     async def sync(self) -> SyncResult:
         return SyncResult(
             success=True,
-            itemsSynced=42,
-            itemsFailed=0,
-            durationMs=1234,
+            items_synced=42,
+            items_failed=0,
+            duration_ms=1234,
             cursor="mock-cursor-001",
         )
 
@@ -124,20 +124,20 @@ class MockConnector(BaseConnector):
             status=self._status,
             health=await self.health(),
             connected=self._connected,
-            lastSync=_utcnow(),
-            syncFrequency="every_1h",
-            workspaceId="ws-mock",
-            organizationId="org-mock",
-            supportedSourceTypes=MOCK_SOURCE_TYPES.get(self._type, ["source"]),
-            authenticationType=MOCK_AUTH_MAP.get(self._type, "custom"),
-            futureCapabilities=FutureCapabilities(
-                supportsOAuth=True,
-                supportsApiKeys=True,
-                supportsWebhooks=True,
-                supportsPolling=True,
-                supportsIncrementalSync=True,
-                supportsPermissions=True,
-                supportsScopes=True,
-                supportsRateLimits=True,
+            last_sync=_utcnow(),
+            sync_frequency="every_1h",
+            workspace_id="ws-mock",
+            organization_id="org-mock",
+            supported_source_types=MOCK_SOURCE_TYPES.get(self._type, ["source"]),
+            authentication_type=MOCK_AUTH_MAP.get(self._type, "custom"),
+            future_capabilities=FutureCapabilities(
+                supports_oauth=True,
+                supports_api_keys=True,
+                supports_webhooks=True,
+                supports_polling=True,
+                supports_incremental_sync=True,
+                supports_permissions=True,
+                supports_scopes=True,
+                supports_rate_limits=True,
             ),
         )
