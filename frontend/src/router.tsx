@@ -10,6 +10,7 @@ import { AuthLayout } from "./layouts/AuthLayout";
 import { DashboardLayout } from "./layouts/DashboardLayout";
 import { RootLayout } from "./layouts/RootLayout";
 import { AIChatPage } from "./pages/chat/AIChatPage";
+import { ConnectorHubPage } from "./pages/connectors/ConnectorHubPage";
 import { DashboardHome } from "./pages/DashboardHome";
 import { DashboardPage } from "./pages/DashboardPage";
 import { KnowledgeHubPage } from "./pages/knowledge/KnowledgeHubPage";
@@ -53,6 +54,7 @@ export const router = createBrowserRouter([
           { path: "organizations", element: <OrganizationsPage /> },
           { path: "workspaces", element: <WorkspacesPage /> },
           { path: "analytics", element: <PlaceholderPage title="Analytics" icon={BarChart3} /> },
+          { path: "connectors", element: <ConnectorHubPage /> },
           { path: "settings", element: <PlaceholderPage title="Settings" icon={Settings} /> },
         ],
       },

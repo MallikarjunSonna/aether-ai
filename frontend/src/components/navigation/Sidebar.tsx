@@ -11,6 +11,7 @@ import {
   Layers,
   LayoutDashboard,
   MessageSquare,
+  Plug,
   Settings,
   X,
 } from "lucide-react";
@@ -34,6 +35,7 @@ const navItems: NavItem[] = [
   { label: "Workspaces", icon: Layers, href: "/dashboard/workspaces" },
   { label: "Organization", icon: Building2, href: "/dashboard/organizations" },
   { label: "Analytics", icon: BarChart3, href: "/dashboard/analytics" },
+  { label: "Connectors", icon: Plug, href: "/dashboard/connectors" },
   { label: "Settings", icon: Settings, href: "/dashboard/settings" },
 ];
 
